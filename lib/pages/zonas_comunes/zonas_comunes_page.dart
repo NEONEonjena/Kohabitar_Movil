@@ -20,8 +20,7 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
   Future<void> fetchAmenities() async {
     try {
       final response = await http.get(
-        Uri.parse(
-            'http://localhost:3000/api_v1/amenity'), // Reemplaza con tu URL base
+        Uri.parse('http://localhost:3000/api_v1/amenity'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -59,7 +58,6 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
   }
 
   void _reservar(String amenityName, int amenityId) {
-    // Aquí puedes implementar la lógica de reserva
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -77,7 +75,6 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
               child: Text('Confirmar'),
               onPressed: () {
                 Navigator.of(context).pop();
-                // Implementar lógica de reserva aquí
                 _processReservation(amenityId);
               },
             ),
@@ -88,7 +85,6 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
   }
 
   void _processReservation(int amenityId) {
-    // Implementar la llamada a la API para hacer la reserva
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Reserva procesada correctamente'),
@@ -104,7 +100,6 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header con gradient
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -121,11 +116,6 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.menu,
-                      color: Colors.white,
-                      size: 24,
-                    ),
                     Expanded(
                       child: Center(
                         child: Text(
@@ -138,11 +128,6 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
                           ),
                         ),
                       ),
-                    ),
-                    Icon(
-                      Icons.notifications,
-                      color: Colors.white,
-                      size: 24,
                     ),
                   ],
                 ),

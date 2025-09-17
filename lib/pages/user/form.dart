@@ -33,12 +33,13 @@ class _UserFormScreenState extends State<UserFormScreen> {
         return;
       }
       // Validación de contraseña segura
-      final passwordRegex = RegExp(
-        r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,16}$'
-      );
+      final passwordRegex =
+          RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,16}$');
       if (!passwordRegex.hasMatch(_passwordController.text)) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Contraseña insegura: 8-16 caracteres, 1 dígito, 1 minúscula, 1 mayúscula y 1 símbolo.')),
+          const SnackBar(
+              content: Text(
+                  'Contraseña insegura: 8-16 caracteres, 1 dígito, 1 minúscula, 1 mayúscula y 1 símbolo.')),
         );
         return;
       }
@@ -53,7 +54,9 @@ class _UserFormScreenState extends State<UserFormScreen> {
       print('Contraseña: ${_passwordController.text}');
       // Mostrar en la vista
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Usuario: ${_usernameController.text}\nEmail: ${_emailController.text}\nContraseña: ${_passwordController.text}')),
+        SnackBar(
+            content: Text(
+                'Usuario: ${_usernameController.text}\nEmail: ${_emailController.text}\nContraseña: ${_passwordController.text}')),
       );
       Navigator.pop(context, userData);
     }
@@ -75,7 +78,7 @@ class _UserFormScreenState extends State<UserFormScreen> {
           child: ListView(
             children: [
               Image.asset(
-                'assets/img/logos/image.png',
+                'assets/img/logos/Logo1.png',
                 height: 100,
               ),
               const SizedBox(height: 20),
