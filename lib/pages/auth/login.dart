@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../../widgets/appbar.dart';
 import '../home/home.dart';
 import '../user/form.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -25,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.text = _registeredPassword ?? '';
   }
 
-  void _navigateToRegister() async {
+  void _navigateToRegistration() async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const UserFormScreen()),
@@ -39,56 +41,60 @@ class _LoginScreenState extends State<LoginScreen> {
         _passwordController.text = _registeredPassword ?? '';
       });
 
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Usuario registrado exitosamente')),
+        const SnackBar(content: Text('Registro exitoso.')),
       );
     }
   }
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      final username = _usernameController.text;
-      final password = _passwordController.text;
-      // Mostrar en consola
-      print('Usuario: $username');
-      print('Contraseña: $password');
-      // Mostrar en la vista
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Usuario: $username\nContraseña: $password')),
-      );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(
-            username: username,
-            password: password,
-          ),
-        ),
-      );
+      final username = _usernameController.text.trim();
+      final password = _passwordController.text.trim();
+
+      try {
+        // Guardamos la sesión en el provider
+        final auth = Provider.of<AuthProvider>(context, listen: false);
+        await auth.login(username, password);
+
+        print('Login successful, navigating to home...'); // Debug
+
+        // Redirigimos al Home usando pushAndRemoveUntil para limpiar el stack
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (route) => false,
+        );
+      } catch (e) {
+        print('Login error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error durante el login: $e')),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Iniciar Sesión'),
+      appBar: const CustomAppBar(title: 'Login'),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(30.0),
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/img/logos/Logo1.png',
+                'assets/img/logos/logo.png',
+                width: 100,
                 height: 100,
               ),
               const SizedBox(height: 20),
               TextFormField(
                 controller: _usernameController,
                 decoration: const InputDecoration(
-                  labelText: 'Usuario (correo electrónico)',
+                  labelText: 'Username (email)',
                   prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
                 ),
@@ -96,11 +102,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese su usuario';
                   }
-                  // Validación de correo electrónico
-                  final emailRegex =
-                      RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                  if (!emailRegex.hasMatch(value)) {
-                    return 'Ingrese un correo electrónico válido';
+                  const emailPattern =
+                      r'^[^@]+@[^@]+\.[^@]+$'; // Simple email validation
+                  if (!RegExp(emailPattern).hasMatch(value)) {
+                    return 'Por favor ingrese un email válido';
                   }
                   return null;
                 },
@@ -109,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: _passwordController,
                 decoration: const InputDecoration(
-                  labelText: 'Contraseña',
+                  labelText: 'Password',
                   prefixIcon: Icon(Icons.lock),
                   border: OutlineInputBorder(),
                 ),
@@ -118,27 +123,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese su contraseña';
                   }
-                  // Validación de contraseña segura
-                  final passwordRegex = RegExp(
-                      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,16}$');
-                  if (!passwordRegex.hasMatch(value)) {
-                    return '8-16 caracteres, 1 dígito, 1 minúscula, 1 mayúscula y 1 símbolo.';
+
+                  const passwordPattern =
+                      r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Za-z0-9]).{8,16}$';
+                  if (!RegExp(passwordPattern).hasMatch(value)) {
+                    return 'La contraseña debe tener entre 8 y 16 caracteres, '
+                        'al menos un dígito, una minúscula, una mayúscula y un carácter especial';
                   }
                   return null;
                 },
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _login,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                child: const Text('Ingresar'),
+                child: const Text('Login'),
               ),
-              const SizedBox(height: 20),
               TextButton(
-                onPressed: _navigateToRegister,
-                child: const Text('¿No tienes cuenta? Regístrate aquí'),
+                onPressed: _navigateToRegistration,
+                child: const Text('Register'),
               ),
             ],
           ),

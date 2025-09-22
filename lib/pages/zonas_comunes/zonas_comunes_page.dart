@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../widgets/navigation_drawer.dart';
 
 class ZonasComunesPage extends StatefulWidget {
+  const ZonasComunesPage({super.key});
+
   @override
   _ZonasComunesPageState createState() => _ZonasComunesPageState();
 }
@@ -62,17 +65,17 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Reservar'),
+          title: const Text('Reservar'),
           content: Text('¿Deseas reservar $amenityName?'),
           actions: [
             TextButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child: Text('Confirmar'),
+              child: const Text('Confirmar'),
               onPressed: () {
                 Navigator.of(context).pop();
                 _processReservation(amenityId);
@@ -86,7 +89,7 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
 
   void _processReservation(int amenityId) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Reserva procesada correctamente'),
         backgroundColor: Colors.green,
       ),
@@ -96,47 +99,34 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
+      appBar: AppBar(
+        title: const Text("Zonas Comunes"),
+        backgroundColor: const Color(0xFF2E7D7B),
+      ),
+      drawer: CustomDrawer(
+        username: "William", // o pásalo dinámico si lo tienes en login
+        currentIndex: 0, // índice de esta vista
+        onItemSelected: (index) {
+          Navigator.pop(context);
+          if (index == 0) {
+            Navigator.pushReplacementNamed(context, '/zonas');
+          } else if (index == 1) {
+            Navigator.pushReplacementNamed(context, '/clientes');
+          } else if (index == 2) {
+            Navigator.pushReplacementNamed(context, '/configuraciones');
+          }
+        },
+        onLogout: () {
+          Navigator.pushReplacementNamed(context, '/login');
+        },
+      ),
+      backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF2E7D7B), Color(0xFF4A9B99)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          'ZONAS COMUNES',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
             // Botones de filtros
             Container(
-              margin: EdgeInsets.all(16),
+              margin: const EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -149,7 +139,7 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
             // Lista de amenidades
             Expanded(
               child: isLoading
-                  ? Center(
+                  ? const Center(
                       child: CircularProgressIndicator(
                         color: Color(0xFF2E7D7B),
                       ),
@@ -157,7 +147,7 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
                   : amenities.isEmpty
                       ? Center(
                           child: Text(
-                            'No hay amenidades disponibles',
+                            'No hay zonas comunes disponibles',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.grey[600],
@@ -165,7 +155,7 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
                           ),
                         )
                       : ListView.builder(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           itemCount: amenities.length,
                           itemBuilder: (context, index) {
                             final amenity = amenities[index];
@@ -182,23 +172,24 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
   Widget _buildFilterButton(String text, bool isActive) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 4),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
         child: ElevatedButton(
           onPressed: () {
             // Implementar lógica de filtros
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: isActive ? Color(0xFF1B4B49) : Color(0xFF4A9B99),
+            backgroundColor:
+                isActive ? const Color(0xFF1B4B49) : const Color(0xFF4A9B99),
             foregroundColor: Colors.white,
             elevation: 0,
-            padding: EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(25),
             ),
           ),
           child: Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -215,13 +206,12 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
     int amenityId = amenity['amenity_id'] ?? 0;
     String status = amenity['status_name'] ?? 'Desconocido';
 
-    // Consideramos disponible si está "Activo"
     bool isAvailable = status.toLowerCase() == 'activo' ||
         status.toLowerCase() == 'available' ||
         status.toLowerCase() == 'disponible';
 
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -229,27 +219,24 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 8,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Nombre
             Text(
               amenityName,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF2E7D7B),
               ),
             ),
-            SizedBox(height: 4),
-
-            // Descripción
+            const SizedBox(height: 4),
             Text(
               description,
               style: TextStyle(
@@ -257,9 +244,7 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
                 color: Colors.grey[700],
               ),
             ),
-            SizedBox(height: 4),
-
-            // Estado y botón
+            const SizedBox(height: 4),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -276,16 +261,18 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
                       ? () => _reservar(amenityName, amenityId)
                       : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isAvailable ? Color(0xFF1B4B49) : Colors.grey[400],
+                    backgroundColor: isAvailable
+                        ? const Color(0xFF1B4B49)
+                        : Colors.grey[400],
                     foregroundColor: Colors.white,
                     elevation: 0,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Reservar',
                     style: TextStyle(
                       fontSize: 14,
@@ -298,36 +285,6 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
           ],
         ),
       ),
-    );
-  }
-}
-
-// Modelo de datos para mayor organización (opcional)
-class Amenity {
-  final int amenityId;
-  final String amenityTypeName;
-  final String propertyName;
-  final String statusName;
-  final String tariffType;
-  final double tariffAmount;
-
-  Amenity({
-    required this.amenityId,
-    required this.amenityTypeName,
-    required this.propertyName,
-    required this.statusName,
-    required this.tariffType,
-    required this.tariffAmount,
-  });
-
-  factory Amenity.fromJson(Map<String, dynamic> json) {
-    return Amenity(
-      amenityId: json['amenity_id'] ?? 0,
-      amenityTypeName: json['Amenity_Type_name'] ?? '',
-      propertyName: json['property_name'] ?? '',
-      statusName: json['status_name'] ?? '',
-      tariffType: json['tariff_type'] ?? '',
-      tariffAmount: (json['tariff_amount'] ?? 0).toDouble(),
     );
   }
 }

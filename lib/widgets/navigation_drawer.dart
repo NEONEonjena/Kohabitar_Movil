@@ -145,7 +145,13 @@ class CustomDrawer extends StatelessWidget {
           9,
           currentIndex == 9,
         ),
-
+        _buildListTile(
+          context,
+          Icons.settings,
+          'Configuración',
+          10,
+          currentIndex == 10,
+        ),
         const Divider(),
         _buildLogoutTile(context),
       ],
@@ -178,7 +184,28 @@ class CustomDrawer extends StatelessWidget {
               size: 20,
             )
           : null,
-      onTap: () => onItemSelected(index),
+      onTap: () {
+        Navigator.pop(context); // Cierra el Drawer
+
+        // Rutas según índice
+        final routes = [
+          '/usuarios',
+          '/propiedades',
+          '/parqueaderos',
+          '/visitantes',
+          '/zonas-comunes',
+          '/pagos',
+          '/reportes',
+          '/notificaciones',
+          '/paquetes',
+          '/pqrs',
+          '/settings',
+        ];
+
+        if (index < routes.length) {
+          Navigator.pushReplacementNamed(context, routes[index]);
+        }
+      },
       selected: isSelected,
       selectedTileColor: Theme.of(context).primaryColor.withOpacity(0.1),
     );

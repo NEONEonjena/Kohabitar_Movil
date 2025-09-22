@@ -1,28 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/appbar.dart';
 import '../../widgets/navigation_drawer.dart';
 import '../user/user.dart';
 import '../auth/login.dart';
-import '../settings/settings_page.dart';
-import '../zonas_comunes/zonas_comunes_page.dart';
-import '../notificaciones/notificaciones_page.dart';
-import '../../main.dart';
+import '../providers/auth_provider.dart';
+import '../settings/settings_page.dart' as settings;
 
-class HomeScreen extends StatefulWidget {
-  final String username;
-  final String password;
-
-  const HomeScreen({
-    super.key,
-    required this.username,
-    required this.password,
-  });
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -32,20 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _pages = [
-      HomeContent(username: widget.username), // 0 Usuarios
-      UserScreen(
-          username: widget.username,
-          password: widget.password), // 1 Propiedades
-      const SettingsPage(), // 2 Parqueaderos
-      Container(child: Center(child: Text('Visitantes'))), // 3 Visitantes
-      ZonasComunesPage(), // 4 Zonas Comunes
-      Container(child: Center(child: Text('Pagos'))), // 5 Pagos
-      Container(child: Center(child: Text('Reportes'))), // 6 Reportes
-      NotificacionesPage(), // 7 Notificaciones
-      Container(child: Center(child: Text('Paquetes'))), // 8 Paquetes
-      Container(child: Center(child: Text('PQRs'))), // 9 PQRs
-    ];
   }
 
   void _onDrawerItemSelected(int index) {
@@ -57,41 +35,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _logout() {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    auth.logout();
+
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      MaterialPageRoute(builder: (context) => const LoginPage()),
       (route) => false,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context);
+
+    _pages = [
+      HomeContent(username: auth.username ?? 'Invitado'),
+      UserScreen(username: auth.username ?? '', password: auth.password ?? ''),
+      const settings.SettingsPage(),
+    ];
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: CustomAppBar(
         title: _getTitle(),
         showBackButton: false,
-        onMenuPressed: () => _scaffoldKey.currentState?.openDrawer(),
-        actions: [
-          IconButton(
-            icon: Icon(Theme.of(context).brightness == Brightness.dark
-                ? Icons.light_mode
-                : Icons.dark_mode),
-            onPressed: () {
-              themeNotifier.value =
-                  Theme.of(context).brightness == Brightness.dark
-                      ? ThemeMode.light
-                      : ThemeMode.dark;
-            },
-            tooltip: 'Cambiar tema',
-          ),
-        ],
+        onMenuPressed: () {
+          _scaffoldKey.currentState?.openDrawer();
+        },
       ),
       drawer: CustomDrawer(
-        username: widget.username,
+        username: auth.username ?? 'Invitado',
+        currentIndex: _currentIndex,
         onItemSelected: _onDrawerItemSelected,
         onLogout: _logout,
-        currentIndex: _currentIndex,
       ),
       body: PageView(
         controller: _pageController,
@@ -110,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return 'Inicio';
       case 1:
-        return 'Perfil';
+        return 'Perfil De Usuario';
       case 2:
         return 'Configuración';
       default:
@@ -132,64 +109,23 @@ class HomeContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '¡Bienvenido, $username!',
+            'Bienvenido, $username!',
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
           const Card(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Icon(Icons.home, size: 50, color: Colors.blue),
-                  SizedBox(height: 10),
-                  Text('Esta es la pantalla principal de la aplicación'),
-                  SizedBox(height: 10),
-                  Text(
-                    'Usa el menú lateral o la barra de navegación inferior para explorar las diferentes secciones.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ],
-              ),
+            child: Column(
+              children: [
+                Icon(Icons.home, size: 50, color: Colors.purple),
+                SizedBox(height: 20),
+                Text(
+                  'Esta es la pantalla de inicio. Aquí puedes ver un resumen de tu actividad reciente y acceder a las diferentes secciones de la aplicación.',
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 20),
-          GridView.count(
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            children: [
-              _buildFeatureCard(Icons.person, 'Perfil', Colors.blue),
-              _buildFeatureCard(Icons.settings, 'Configuración', Colors.green),
-              _buildFeatureCard(
-                  Icons.notifications, 'Notificaciones', Colors.orange),
-              _buildFeatureCard(Icons.help, 'Ayuda', Colors.purple),
-            ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureCard(IconData icon, String title, Color color) {
-    return Card(
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 40, color: color),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }
