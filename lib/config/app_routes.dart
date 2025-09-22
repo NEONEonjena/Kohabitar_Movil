@@ -8,6 +8,8 @@ import '../pages/home/home.dart';
 import '../pages/zonas_comunes/zonas_comunes_page.dart';
 import '../pages/propiedades/propiedades_page.dart';
 import '../pages/users/users_page.dart';
+import '../pages/parqueaderos/parqueaderos_page.dart';
+import '../pages/visitantes/visitantes_page.dart';
 
 class AppRoutes {
   // Definición de rutas
@@ -17,6 +19,9 @@ class AppRoutes {
   static const String zonaComunes = '/zonas-comunes';
   static const String propiedades = '/propiedades';
   static const String settings = '/settings';
+  static const String usuarios = '/usuarios';
+  static const String parqueaderos = '/parqueaderos';
+  static const String visitantes = '/visitantes';
 
   // Mapa de rutas
   static Map<String, WidgetBuilder> get routes => {
@@ -26,10 +31,10 @@ class AppRoutes {
         zonaComunes: (context) => ZonasComunesPage(),
         settings: (context) => const SettingsPage(),
         propiedades: (context) => const PropiedadesPage(),
-        '/usuarios': (context) => const UsuariosPage(),
+        usuarios: (context) => const UsuariosPage(),
+        parqueaderos: (context) => const ParqueaderosPage(),
+        visitantes: (context) => const VisitantesPage(),
         // Aquí puedes agregar más rutas cuando descomentes las páginas
-        // '/parqueaderos': (context) => const ParqueaderosPage(),
-        // '/visitantes': (context) => const VisitantesPage(),
         // '/pagos': (context) => const PagosPage(),
         // '/reportes': (context) => const ReportesPage(),
         // '/notificaciones': (context) => const NotificacionesPage(),
