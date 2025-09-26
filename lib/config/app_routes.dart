@@ -11,6 +11,7 @@ import '../pages/users/users_page.dart';
 import '../pages/parqueaderos/parqueaderos_page.dart';
 import '../pages/visitantes/visitantes_page.dart';
 import '../pages/notificaciones/notificaciones_page.dart';
+import '../pages/reservas/reservas_page.dart';
 
 class AppRoutes {
   // Definición de rutas
@@ -25,6 +26,7 @@ class AppRoutes {
   static const String visitantes = '/visitantes';
   static const String notificaciones = '/notificaciones';
   static const String reportes = '/reportes';
+  static const String reservas = '/reservas';
 
   // Mapa de rutas
   static Map<String, WidgetBuilder> get routes => {
@@ -38,6 +40,7 @@ class AppRoutes {
         parqueaderos: (context) => const ParqueaderosPage(),
         visitantes: (context) => const VisitantesPage(),
         notificaciones: (context) => const NotificacionesPage(),
+        reservas: (context) => const ReservasPage(),
         // Aquí puedes agregar más rutas cuando descomentes las páginas
         // '/pagos': (context) => const PagosPage(),
         // '/paquetes': (context) => const PaquetesPage(),
