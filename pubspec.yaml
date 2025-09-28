@@ -31,6 +31,9 @@ dependencies:
   flutter:
     sdk: flutter
   fl_chart: ^0.68.0
+  provider: ^6.0.5
+  shared_preferences: ^2.1.1
+  animate_do: ^2.1.0
 
 
 

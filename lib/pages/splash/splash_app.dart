@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../auth/login.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class SplashApp extends StatefulWidget {
+  const SplashApp({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<SplashApp> createState() => _SplashAppState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashAppState extends State<SplashApp>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -16,23 +16,19 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     );
 
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInExpo);
 
     _controller.forward();
 
     Future.delayed(const Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     });
   }
@@ -45,33 +41,49 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 28, 128, 158),
       extendBodyBehindAppBar: true,
-      body: Center(
-        child: ScaleTransition(
-          scale: _animation,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/img/logos/Logo.png',
-                height: 100,
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'KOHABITAR',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [scheme.primary, scheme.primaryContainer.withOpacity(.85)],
+          ),
+        ),
+        child: Center(
+          child: ScaleTransition(
+            scale: _animation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/img/logos/logo.png',
+                  width: 150,
+                  height: 150,
                 ),
-              ),
-              const SizedBox(height: 20),
-              const CircularProgressIndicator(
-                color: Colors.white,
-              ),
-            ],
+                const SizedBox(height: 24),
+                Text(
+                  'Ejemplo App Flutter',
+                  style: textTheme.titleLarge?.copyWith(
+                    color: scheme.onPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 26,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 28),
+                SizedBox(
+                  width: 180,
+                  child: LinearProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(scheme.onPrimary),
+                    backgroundColor: scheme.onPrimary.withOpacity(.25),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

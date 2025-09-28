@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../widgets/appbar.dart';
 
-class ChangePasswordScreen extends StatefulWidget {
-  const ChangePasswordScreen({super.key});
+class UserFormScreen extends StatefulWidget {
+  const UserFormScreen({super.key});
 
   @override
-  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+  State<UserFormScreen> createState() => _UserFormScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+class _UserFormScreenState extends State<UserFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -16,7 +16,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
-  void _changePassword() {
+  void _register() {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -24,7 +24,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         );
         return;
       }
-
+      // Validación de correo electrónico
       final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
       if (!emailRegex.hasMatch(_emailController.text)) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -32,7 +32,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         );
         return;
       }
-
+      // Validación de contraseña segura
       final passwordRegex =
           RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,16}$');
       if (!passwordRegex.hasMatch(_passwordController.text)) {
@@ -43,13 +43,21 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         );
         return;
       }
-
       final userData = {
         'username': _usernameController.text,
         'password': _passwordController.text,
         'email': _emailController.text,
       };
-
+      // Mostrar en consola
+      print('Usuario: ${_usernameController.text}');
+      print('Email: ${_emailController.text}');
+      print('Contraseña: ${_passwordController.text}');
+      // Mostrar en la vista
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Usuario: ${_usernameController.text}\nEmail: ${_emailController.text}\nContraseña: ${_passwordController.text}')),
+      );
       Navigator.pop(context, userData);
     }
   }
@@ -58,19 +66,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     Navigator.pop(context);
   }
 
-  InputDecoration _inputDecoration(String label, IconData icon) {
-    return InputDecoration(
-      labelText: label,
-      prefixIcon: Icon(icon),
-      border: const UnderlineInputBorder(), // 👈 solo línea inferior
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-          title: 'Cambio de Contraseña', showBackButton: true),
+      appBar:
+          const CustomAppBar(title: 'Registrar Usuario', showBackButton: true),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
@@ -84,7 +84,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _usernameController,
-                decoration: _inputDecoration('Usuario', Icons.person),
+                decoration: const InputDecoration(
+                  labelText: 'Usuario',
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder(),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese un usuario';
@@ -95,7 +99,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _emailController,
-                decoration: _inputDecoration('Email', Icons.email),
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.email),
+                  border: OutlineInputBorder(),
+                ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -110,7 +118,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _passwordController,
-                decoration: _inputDecoration('Nueva Contraseña', Icons.lock),
+                decoration: const InputDecoration(
+                  labelText: 'Contraseña',
+                  prefixIcon: Icon(Icons.lock),
+                  border: OutlineInputBorder(),
+                ),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -125,8 +137,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _confirmPasswordController,
-                decoration: _inputDecoration(
-                    'Confirmar Contraseña', Icons.lock_outline),
+                decoration: const InputDecoration(
+                  labelText: 'Confirmar Contraseña',
+                  prefixIcon: Icon(Icons.lock_outline),
+                  border: OutlineInputBorder(),
+                ),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -140,13 +155,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: _changePassword,
-                      child: const Text('Cambiar'),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize:
-                            const Size(double.infinity, 50), // 👈 altura fija
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
+                      onPressed: _register,
+                      child: const Text('Registrar'),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -154,11 +164,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     child: OutlinedButton(
                       onPressed: _cancel,
                       child: const Text('Cancelar'),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize:
-                            const Size(double.infinity, 50), // 👈 misma altura
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
                     ),
                   ),
                 ],
