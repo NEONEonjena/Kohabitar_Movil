@@ -14,7 +14,8 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
   List<dynamic> properties = [];
   List<dynamic> filteredProperties = [];
   bool isLoading = true;
-  String currentFilter = 'todas'; // 'todas', 'activas', 'inactivas'
+  String currentFilter = 'todas';
+  String searchQuery = '';
 
   @override
   void initState() {
@@ -31,7 +32,8 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
         },
       );
 
-      if (response.statusCode == 200) {
+      // ✅ Cambio 1: Acepta status 201
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final data = json.decode(response.body);
         setState(() {
           properties = data['data'] ?? [];
@@ -53,26 +55,21 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
     }
   }
 
+  // ✅ Cambio 2: Filtro basado en tipo de propiedad (ya que no hay status)
   void _applyFilter(String filter) {
     setState(() {
       currentFilter = filter;
       if (filter == 'todas') {
         filteredProperties = properties;
-      } else if (filter == 'activas') {
+      } else if (filter == 'casa') {
         filteredProperties = properties.where((property) {
-          String status =
-              property['status_name']?.toString().toLowerCase() ?? '';
-          return status == 'activo' ||
-              status == 'active' ||
-              status == 'disponible';
+          String type = property['property_type']?.toString().toLowerCase() ?? '';
+          return type.contains('casa');
         }).toList();
-      } else if (filter == 'inactivas') {
+      } else if (filter == 'apartamento') {
         filteredProperties = properties.where((property) {
-          String status =
-              property['status_name']?.toString().toLowerCase() ?? '';
-          return status != 'activo' &&
-              status != 'active' &&
-              status != 'disponible';
+          String type = property['property_type']?.toString().toLowerCase() ?? '';
+          return type.contains('apartamento');
         }).toList();
       }
     });
@@ -108,15 +105,7 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
                 style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 8),
-              Text(
-                'Estado: ${property['status_name'] ?? 'Desconocido'}',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: _getStatusColor(property['status_name']),
-                ),
-              ),
-              const SizedBox(height: 8),
+              // ✅ Cambio 3: Eliminado el campo status_name que no existe
               Text(
                 'Creado: ${_formatDate(property['property_createAt'])}',
                 style: TextStyle(
@@ -156,17 +145,6 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
     }
   }
 
-  Color _getStatusColor(String? status) {
-    if (status == null) return Colors.grey;
-    String statusLower = status.toLowerCase();
-    if (statusLower == 'activo' ||
-        statusLower == 'active' ||
-        statusLower == 'disponible') {
-      return Colors.green;
-    }
-    return Colors.red;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,9 +153,8 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
         backgroundColor: const Color(0xFF2E7D7B),
       ),
       drawer: CustomDrawer(
-        username: "William", // o pásalo dinámico si lo tienes en login
-        currentIndex:
-            1, // índice de esta vista (asumiendo que propiedades es índice 1)
+        username: "William",
+        currentIndex: 1,
         onItemSelected: (index) {
           Navigator.pop(context);
           if (index == 0) {
@@ -198,20 +175,19 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Botones de filtros
+            // ✅ Cambio 4: Botones de filtro por tipo de propiedad
             Container(
               margin: const EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildFilterButton('todas', 'todas'),
-                  _buildFilterButton('activas', 'activas'),
-                  _buildFilterButton('inactivas', 'inactivas'),
+                  _buildFilterButton('Todas', 'todas'),
+                  _buildFilterButton('Casas', 'casa'),
+                  _buildFilterButton('Apartamentos', 'apartamento'),
                 ],
               ),
             ),
 
-            // Contador de propiedades
             if (!isLoading)
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -226,15 +202,8 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.refresh, color: Color(0xFF2E7D7B)),
-                      onPressed: fetchProperties,
-                    ),
-                  ],
-                ),
-              ),
+                  ],                )),
 
-            // Lista de propiedades
             Expanded(
               child: isLoading
                   ? const Center(
@@ -256,7 +225,7 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
                               Text(
                                 currentFilter == 'todas'
                                     ? 'No hay propiedades disponibles'
-                                    : 'No hay propiedades $currentFilter',
+                                    : 'No hay propiedades del tipo $currentFilter',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.grey[600],
@@ -318,7 +287,6 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
         property['property_name']?.toString().toUpperCase() ?? 'PROPIEDAD';
     String description = property['property_description'] ?? 'Sin descripción';
     String propertyType = property['property_type'] ?? 'Sin tipo';
-    String status = property['status_name'] ?? 'Desconocido';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -327,7 +295,6 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
@@ -375,43 +342,22 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2E7D7B).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        propertyType,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF2E7D7B),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                // ✅ Cambio 5: Eliminado el indicador de status que no existe
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2E7D7B).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    propertyType,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF2E7D7B),
+                      fontWeight: FontWeight.w500,
                     ),
-                    const Spacer(),
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: _getStatusColor(status),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      status,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: _getStatusColor(status),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
