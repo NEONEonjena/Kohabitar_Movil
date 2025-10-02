@@ -12,6 +12,9 @@ import '../pages/parqueaderos/parqueaderos_page.dart';
 import '../pages/visitantes/visitantes_page.dart';
 import '../pages/notificaciones/notificaciones_page.dart';
 import '../pages/reservas/reservas_page.dart';
+import '../pages/paquetes/paquetes_page.dart';
+import '../pages/pagos/pagos_page.dart';
+import '../pages/pqrs/pqrs_page.dart';
 
 class AppRoutes {
   // Definición de rutas
@@ -27,6 +30,10 @@ class AppRoutes {
   static const String notificaciones = '/notificaciones';
   static const String reportes = '/reportes';
   static const String reservas = '/reservas';
+  static const String paquetes = '/paquetes';
+  static const String pagos = '/pagos';
+  static const String pqrs = '/pqrs';
+  
 
   // Mapa de rutas
   static Map<String, WidgetBuilder> get routes => {
@@ -41,6 +48,9 @@ class AppRoutes {
         visitantes: (context) => const VisitantesPage(),
         notificaciones: (context) => const NotificacionesPage(),
         reservas: (context) => const ReservasPage(),
+        paquetes: (context) => const PaquetesPage(),
+        pagos: (context) => const PagosPage(),
+        pqrs: (context) => const PqrsPage(),
         // Aquí puedes agregar más rutas cuando descomentes las páginas
         // '/pagos': (context) => const PagosPage(),
         // '/paquetes': (context) => const PaquetesPage(),
