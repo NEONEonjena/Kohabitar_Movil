@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../widgets/navigation_drawer.dart';
+import '../../config/app_theme.dart';
 
 class UsuariosPage extends StatefulWidget {
   const UsuariosPage({super.key});
@@ -110,10 +111,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
               const SizedBox(height: 20),
               Text(
                 user['user_name']?.toString() ?? 'Usuario',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 20),
               _buildOptionTile(
@@ -156,7 +154,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
     Color? color,
   }) {
     return ListTile(
-      leading: Icon(icon, color: color ?? const Color(0xFF2E7D7B)),
+      leading: Icon(icon, color: color ?? AppTheme.primaryColor),
       title: Text(
         title,
         style: TextStyle(
@@ -355,7 +353,6 @@ class _UsuariosPageState extends State<UsuariosPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Usuarios"),
-        backgroundColor: const Color(0xFF2E7D7B),
       ),
       drawer: CustomDrawer(
         username: "William",
@@ -376,7 +373,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -384,7 +381,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
             Container(
               margin: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
@@ -396,12 +393,12 @@ class _UsuariosPageState extends State<UsuariosPage> {
               ),
               child: TextField(
                 controller: searchController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Buscar Usuario...',
-                  prefixIcon: Icon(Icons.search, color: Color(0xFF2E7D7B)),
+                  prefixIcon: Icon(Icons.search, color: AppTheme.primaryColor),
                   border: InputBorder.none,
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
               ),
             ),
@@ -409,9 +406,9 @@ class _UsuariosPageState extends State<UsuariosPage> {
             // Lista de usuarios
             Expanded(
               child: isLoading
-                  ? const Center(
+                  ? Center(
                       child: CircularProgressIndicator(
-                        color: Color(0xFF2E7D7B),
+                        color: AppTheme.secondaryColor,
                       ),
                     )
                   : filteredUsers.isEmpty
@@ -438,7 +435,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
                           ),
                         )
                       : RefreshIndicator(
-                          color: const Color(0xFF2E7D7B),
+                          color: AppTheme.secondaryColor,
                           onRefresh: fetchUsers,
                           child: ListView.builder(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -463,8 +460,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
             ),
           );
         },
-        backgroundColor: const Color(0xFF2E7D7B),
-        child: const Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -478,7 +474,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -519,20 +515,21 @@ class _UsuariosPageState extends State<UsuariosPage> {
                     children: [
                       Text(
                         fullName,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
                           Text(
                             roleName,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: Colors.black54,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white70
+                                  : Colors.black54,
                             ),
                           ),
                           const SizedBox(width: 8),

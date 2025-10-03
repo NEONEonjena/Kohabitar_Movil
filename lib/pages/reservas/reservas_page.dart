@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import '../../widgets/navigation_drawer.dart';
+import '../../config/app_theme.dart';
 
 class ReservasPage extends StatefulWidget {
   const ReservasPage({super.key});
@@ -84,11 +85,10 @@ class _ReservasPageState extends State<ReservasPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Mis Reservas"),
-        backgroundColor: const Color(0xFF2E7D7B),
       ),
       drawer: CustomDrawer(
         username: "William",
-        currentIndex: 5, // 👈 índice correcto de "Reservas"
+        currentIndex: 5,
         onItemSelected: (index) {
           Navigator.pop(context);
           Navigator.pushReplacementNamed(context, '/reservas');
@@ -97,11 +97,12 @@ class _ReservasPageState extends State<ReservasPage> {
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(color: Color(0xFF2E7D7B)),
+            ? Center(
+                child:
+                    CircularProgressIndicator(color: AppTheme.secondaryColor),
               )
             : reservas.isEmpty
                 ? Center(
@@ -138,7 +139,7 @@ class _ReservasPageState extends State<ReservasPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -155,21 +156,49 @@ class _ReservasPageState extends State<ReservasPage> {
           children: [
             Text(
               amenityName.toUpperCase(),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF2E7D7B),
+                color: AppTheme.primaryColor,
               ),
             ),
             const SizedBox(height: 6),
-            Text("Creada: $fecha",
-                style: TextStyle(fontSize: 14, color: Colors.grey[700])),
-            Text("Inicio: $inicio",
-                style: TextStyle(fontSize: 14, color: Colors.grey[700])),
-            Text("Fin: $fin",
-                style: TextStyle(fontSize: 14, color: Colors.grey[700])),
-            Text("Capacidad: $capacidad personas",
-                style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+            Text(
+              "Creada: $fecha",
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white70
+                    : Colors.grey[700],
+              ),
+            ),
+            Text(
+              "Inicio: $inicio",
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white70
+                    : Colors.grey[700],
+              ),
+            ),
+            Text(
+              "Fin: $fin",
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white70
+                    : Colors.grey[700],
+              ),
+            ),
+            Text(
+              "Capacidad: $capacidad personas",
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white70
+                    : Colors.grey[700],
+              ),
+            ),
             const SizedBox(height: 8),
             Text(
               "Estado: $estado",

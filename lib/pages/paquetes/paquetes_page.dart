@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../widgets/navigation_drawer.dart';
+import '../../config/app_theme.dart';
 
 class PaquetesPage extends StatefulWidget {
   const PaquetesPage({super.key});
@@ -66,10 +67,14 @@ class _PaquetesPageState extends State<PaquetesPage> {
         filteredPackages = packages;
       } else {
         filteredPackages = packages.where((package) {
-          String description = package['Package_description']?.toString().toLowerCase() ?? '';
-          String userName = package['user_name']?.toString().toLowerCase() ?? '';
-          String propertyName = package['property_name']?.toString().toLowerCase() ?? '';
-          String statusName = package['status_name']?.toString().toLowerCase() ?? '';
+          String description =
+              package['Package_description']?.toString().toLowerCase() ?? '';
+          String userName =
+              package['user_name']?.toString().toLowerCase() ?? '';
+          String propertyName =
+              package['property_name']?.toString().toLowerCase() ?? '';
+          String statusName =
+              package['status_name']?.toString().toLowerCase() ?? '';
           return description.contains(query) ||
               userName.contains(query) ||
               propertyName.contains(query) ||
@@ -169,11 +174,11 @@ class _PaquetesPageState extends State<PaquetesPage> {
     Color? color,
   }) {
     return ListTile(
-      leading: Icon(icon, color: color ?? const Color(0xFF2E7D7B)),
+      leading: Icon(icon, color: color ?? AppTheme.primaryColor),
       title: Text(
         title,
         style: TextStyle(
-          color: color ?? Colors.black87,
+          color: color ?? Theme.of(context).textTheme.bodyLarge?.color,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -194,11 +199,14 @@ class _PaquetesPageState extends State<PaquetesPage> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: _getPackageStatusColor(package['package_exitAt']).withOpacity(0.2),
+                  color: _getPackageStatusColor(package['package_exitAt'])
+                      .withOpacity(0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
-                  package['package_exitAt'] == null ? Icons.inbox : Icons.outbox,
+                  package['package_exitAt'] == null
+                      ? Icons.inbox
+                      : Icons.outbox,
                   color: _getPackageStatusColor(package['package_exitAt']),
                   size: 20,
                 ),
@@ -216,14 +224,23 @@ class _PaquetesPageState extends State<PaquetesPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDetailRow('Descripción', package['Package_description'] ?? 'No disponible'),
-              _buildDetailRow('Usuario', package['user_name'] ?? 'No disponible'),
-              _buildDetailRow('Propiedad', package['property_name'] ?? 'No disponible'),
-              _buildDetailRow('Estado', package['status_name'] ?? 'No disponible'),
-              _buildDetailRow('Fecha de entrada', _formatDate(package['package_entryAt'])),
-              _buildDetailRow('Fecha de salida', _formatDate(package['package_exitAt'])),
-              _buildDetailRow('Estado del paquete', 
-                package['package_exitAt'] == null ? 'Pendiente' : 'Entregado'),
+              _buildDetailRow('Descripción',
+                  package['Package_description'] ?? 'No disponible'),
+              _buildDetailRow(
+                  'Usuario', package['user_name'] ?? 'No disponible'),
+              _buildDetailRow(
+                  'Propiedad', package['property_name'] ?? 'No disponible'),
+              _buildDetailRow(
+                  'Estado', package['status_name'] ?? 'No disponible'),
+              _buildDetailRow(
+                  'Fecha de entrada', _formatDate(package['package_entryAt'])),
+              _buildDetailRow(
+                  'Fecha de salida', _formatDate(package['package_exitAt'])),
+              _buildDetailRow(
+                  'Estado del paquete',
+                  package['package_exitAt'] == null
+                      ? 'Pendiente'
+                      : 'Entregado'),
             ],
           ),
           actions: [
@@ -319,7 +336,7 @@ class _PaquetesPageState extends State<PaquetesPage> {
             backgroundColor: Colors.green,
           ),
         );
-        fetchPackages(); // Recargar la lista
+        fetchPackages();
       } else {
         _showError('Error al marcar el paquete como entregado');
       }
@@ -374,7 +391,7 @@ class _PaquetesPageState extends State<PaquetesPage> {
             backgroundColor: Colors.green,
           ),
         );
-        fetchPackages(); // Recargar la lista
+        fetchPackages();
       } else {
         _showError('Error al eliminar el paquete');
       }
@@ -412,11 +429,10 @@ class _PaquetesPageState extends State<PaquetesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Paquetes"),
-        backgroundColor: const Color(0xFF2E7D7B),
       ),
       drawer: CustomDrawer(
         username: "William",
-        currentIndex: 4, // índice de paquetes
+        currentIndex: 4,
         onItemSelected: (index) {
           Navigator.pop(context);
           if (index == 0) {
@@ -435,7 +451,7 @@ class _PaquetesPageState extends State<PaquetesPage> {
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -443,7 +459,7 @@ class _PaquetesPageState extends State<PaquetesPage> {
             Container(
               margin: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
@@ -455,12 +471,12 @@ class _PaquetesPageState extends State<PaquetesPage> {
               ),
               child: TextField(
                 controller: searchController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Buscar Paquete...',
-                  prefixIcon: Icon(Icons.search, color: Color(0xFF2E7D7B)),
+                  prefixIcon: Icon(Icons.search, color: AppTheme.primaryColor),
                   border: InputBorder.none,
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
               ),
             ),
@@ -468,9 +484,9 @@ class _PaquetesPageState extends State<PaquetesPage> {
             // Lista de paquetes
             Expanded(
               child: isLoading
-                  ? const Center(
+                  ? Center(
                       child: CircularProgressIndicator(
-                        color: Color(0xFF2E7D7B),
+                        color: AppTheme.primaryColor,
                       ),
                     )
                   : filteredPackages.isEmpty
@@ -497,7 +513,7 @@ class _PaquetesPageState extends State<PaquetesPage> {
                           ),
                         )
                       : RefreshIndicator(
-                          color: const Color(0xFF2E7D7B),
+                          color: AppTheme.primaryColor,
                           onRefresh: fetchPackages,
                           child: ListView.builder(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -521,16 +537,18 @@ class _PaquetesPageState extends State<PaquetesPage> {
             ),
           );
         },
-        backgroundColor: const Color(0xFF2E7D7B),
+        backgroundColor: AppTheme.secondaryColor,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 
   Widget _buildPackageCard(dynamic package) {
-    String description = package['Package_description']?.toString() ?? 'Sin descripción';
+    String description =
+        package['Package_description']?.toString() ?? 'Sin descripción';
     String userName = package['user_name']?.toString() ?? 'Usuario desconocido';
-    String propertyName = package['property_name']?.toString() ?? 'Propiedad desconocida';
+    String propertyName =
+        package['property_name']?.toString() ?? 'Propiedad desconocida';
     String statusName = package['status_name']?.toString() ?? 'Sin estado';
     String entryDate = _formatDate(package['package_entryAt']);
     bool isDelivered = package['package_exitAt'] != null;
@@ -538,7 +556,7 @@ class _PaquetesPageState extends State<PaquetesPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -561,7 +579,8 @@ class _PaquetesPageState extends State<PaquetesPage> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: _getPackageStatusColor(package['package_exitAt']).withOpacity(0.2),
+                    color: _getPackageStatusColor(package['package_exitAt'])
+                        .withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -579,10 +598,10 @@ class _PaquetesPageState extends State<PaquetesPage> {
                     children: [
                       Text(
                         description,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -590,17 +609,25 @@ class _PaquetesPageState extends State<PaquetesPage> {
                       const SizedBox(height: 4),
                       Text(
                         'Para: $userName',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: Colors.black54,
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.color
+                              ?.withOpacity(0.6),
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         'Propiedad: $propertyName',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Colors.black45,
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.color
+                              ?.withOpacity(0.5),
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -610,7 +637,8 @@ class _PaquetesPageState extends State<PaquetesPage> {
                             width: 6,
                             height: 6,
                             decoration: BoxDecoration(
-                              color: _getPackageStatusColor(package['package_exitAt']),
+                              color: _getPackageStatusColor(
+                                  package['package_exitAt']),
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -619,16 +647,21 @@ class _PaquetesPageState extends State<PaquetesPage> {
                             _getPackageStatusText(package['package_exitAt']),
                             style: TextStyle(
                               fontSize: 12,
-                              color: _getPackageStatusColor(package['package_exitAt']),
+                              color: _getPackageStatusColor(
+                                  package['package_exitAt']),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             entryDate,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 11,
-                              color: Colors.black38,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.color
+                                  ?.withOpacity(0.4),
                             ),
                           ),
                         ],

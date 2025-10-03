@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../widgets/navigation_drawer.dart';
+import '../../config/app_theme.dart';
 
 class ParqueaderosPage extends StatefulWidget {
   const ParqueaderosPage({super.key});
@@ -180,7 +181,7 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
             if (_isAvailable(parkingZone['status_name']))
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2E7D7B),
+                  backgroundColor: AppTheme.primaryColor,
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Reservar'),
@@ -237,7 +238,7 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2E7D7B),
+                backgroundColor: AppTheme.primaryColor,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Confirmar'),
@@ -280,10 +281,7 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
               const SizedBox(height: 20),
               Text(
                 '${parkingZone['zone_name'] ?? 'Zona'} #${parkingZone['zone_number'] ?? 'N/A'}',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 20),
               _buildOptionTile(
@@ -335,11 +333,14 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
     Color? color,
   }) {
     return ListTile(
-      leading: Icon(icon, color: color ?? const Color(0xFF2E7D7B)),
+      leading: Icon(icon, color: color ?? AppTheme.primaryColor),
       title: Text(
         title,
         style: TextStyle(
-          color: color ?? Colors.black87,
+          color: color ??
+              (Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black87),
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -459,7 +460,6 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Parqueaderos"),
-        backgroundColor: const Color(0xFF2E7D7B),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -488,7 +488,7 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -496,7 +496,7 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
             Container(
               margin: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
@@ -508,12 +508,12 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
               ),
               child: TextField(
                 controller: searchController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Buscar zona de parqueo...',
-                  prefixIcon: Icon(Icons.search, color: Color(0xFF2E7D7B)),
+                  prefixIcon: Icon(Icons.search, color: AppTheme.primaryColor),
                   border: InputBorder.none,
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
               ),
             ),
@@ -565,9 +565,9 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
             // Lista de zonas de parqueo
             Expanded(
               child: isLoading
-                  ? const Center(
+                  ? Center(
                       child: CircularProgressIndicator(
-                        color: Color(0xFF2E7D7B),
+                        color: AppTheme.secondaryColor,
                       ),
                     )
                   : filteredParkingZones.isEmpty
@@ -595,7 +595,7 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
                           ),
                         )
                       : RefreshIndicator(
-                          color: const Color(0xFF2E7D7B),
+                          color: AppTheme.secondaryColor,
                           onRefresh: fetchParkingZones,
                           child: ListView.builder(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -614,8 +614,7 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
         onPressed: () {
           _showSuccess('Función de crear zona en desarrollo');
         },
-        backgroundColor: const Color(0xFF2E7D7B),
-        child: const Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -635,7 +634,7 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
           onPressed: () => _applyFilter(filterValue),
           style: ElevatedButton.styleFrom(
             backgroundColor:
-                isSelected ? const Color(0xFF1B4B49) : const Color(0xFF4A9B99),
+                isSelected ? AppTheme.primaryColor : AppTheme.secondaryColor,
             foregroundColor: Colors.white,
             elevation: 0,
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -677,7 +676,7 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -719,10 +718,10 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
                         children: [
                           Text(
                             '$zoneName #$zoneNumber',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF2E7D7B),
+                              color: AppTheme.primaryColor,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -730,7 +729,10 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
                             location,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey[600],
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white70
+                                  : Colors.grey[600],
                             ),
                           ),
                         ],
@@ -750,7 +752,9 @@ class _ParqueaderosPageState extends State<ParqueaderosPage> {
                   description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[700],
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.grey[700],
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

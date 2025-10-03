@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../widgets/navigation_drawer.dart';
+import '../../config/app_theme.dart';
 
 class PagosPage extends StatefulWidget {
   const PagosPage({super.key});
@@ -67,7 +68,8 @@ class _PagosPageState extends State<PagosPage> {
         filteredPayments = payments;
       } else {
         filteredPayments = payments.where((payment) {
-          String reference = payment['reference']?.toString().toLowerCase() ?? '';
+          String reference =
+              payment['reference']?.toString().toLowerCase() ?? '';
           String method = payment['method']?.toString().toLowerCase() ?? '';
           String amount = payment['amount_paid']?.toString() ?? '';
           String userId = payment['user_id']?.toString() ?? '';
@@ -187,11 +189,11 @@ class _PagosPageState extends State<PagosPage> {
     Color? color,
   }) {
     return ListTile(
-      leading: Icon(icon, color: color ?? const Color(0xFF2E7D7B)),
+      leading: Icon(icon, color: color ?? AppTheme.primaryColor),
       title: Text(
         title,
         style: TextStyle(
-          color: color ?? Colors.black87,
+          color: color ?? Theme.of(context).textTheme.bodyLarge?.color,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -211,7 +213,8 @@ class _PagosPageState extends State<PagosPage> {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: _getStatusColor(payment['status_id']).withOpacity(0.2),
+                backgroundColor:
+                    _getStatusColor(payment['status_id']).withOpacity(0.2),
                 child: Icon(
                   Icons.payment,
                   color: _getStatusColor(payment['status_id']),
@@ -232,17 +235,26 @@ class _PagosPageState extends State<PagosPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildDetailRow('ID', payment['payment_id']?.toString() ?? 'N/A'),
-                _buildDetailRow('Usuario ID', payment['user_id']?.toString() ?? 'N/A'),
-                _buildDetailRow('Monto', _formatCurrency(payment['amount_paid'])),
+                _buildDetailRow(
+                    'ID', payment['payment_id']?.toString() ?? 'N/A'),
+                _buildDetailRow(
+                    'Usuario ID', payment['user_id']?.toString() ?? 'N/A'),
+                _buildDetailRow(
+                    'Monto', _formatCurrency(payment['amount_paid'])),
                 _buildDetailRow('Fecha', _formatDate(payment['payment_date'])),
-                _buildDetailRow('Método', payment['method'] ?? 'No especificado'),
-                _buildDetailRow('Referencia', payment['reference'] ?? 'Sin referencia'),
-                _buildDetailRow('Factura ID', payment['invoice_id']?.toString() ?? 'N/A'),
-                _buildDetailRow('Reserva ID', payment['reservation_id']?.toString() ?? 'N/A'),
-                _buildDetailRow('Parking ID', payment['parking_assignment_id']?.toString() ?? 'N/A'),
+                _buildDetailRow(
+                    'Método', payment['method'] ?? 'No especificado'),
+                _buildDetailRow(
+                    'Referencia', payment['reference'] ?? 'Sin referencia'),
+                _buildDetailRow(
+                    'Factura ID', payment['invoice_id']?.toString() ?? 'N/A'),
+                _buildDetailRow('Reserva ID',
+                    payment['reservation_id']?.toString() ?? 'N/A'),
+                _buildDetailRow('Parking ID',
+                    payment['parking_assignment_id']?.toString() ?? 'N/A'),
                 _buildDetailRow('Estado', _getStatusText(payment['status_id'])),
-                _buildDetailRow('Tipo de Pago ID', payment['payment_type_id']?.toString() ?? 'N/A'),
+                _buildDetailRow('Tipo de Pago ID',
+                    payment['payment_type_id']?.toString() ?? 'N/A'),
                 _buildDetailRow('Creado', _formatDate(payment['created_at'])),
               ],
             ),
@@ -330,7 +342,7 @@ class _PagosPageState extends State<PagosPage> {
 
       if (response.statusCode == 200) {
         _showSuccess('Pago eliminado correctamente');
-        fetchPayments(); // Recargar la lista
+        fetchPayments();
       } else {
         _showError('Error al eliminar el pago');
       }
@@ -341,16 +353,16 @@ class _PagosPageState extends State<PagosPage> {
 
   void _showCreateEditDialog({dynamic payment}) {
     bool isEditing = payment != null;
-    
-    final TextEditingController userIdController = 
+
+    final TextEditingController userIdController =
         TextEditingController(text: payment?['user_id']?.toString() ?? '');
-    final TextEditingController amountController = 
+    final TextEditingController amountController =
         TextEditingController(text: payment?['amount_paid']?.toString() ?? '');
-    final TextEditingController dateController = 
-        TextEditingController(text: _formatDateForInput(payment?['payment_date']));
-    final TextEditingController methodController = 
+    final TextEditingController dateController = TextEditingController(
+        text: _formatDateForInput(payment?['payment_date']));
+    final TextEditingController methodController =
         TextEditingController(text: payment?['method'] ?? '');
-    final TextEditingController referenceController = 
+    final TextEditingController referenceController =
         TextEditingController(text: payment?['reference'] ?? '');
 
     showDialog(
@@ -415,7 +427,7 @@ class _PagosPageState extends State<PagosPage> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2E7D7B),
+                backgroundColor: AppTheme.secondaryColor,
                 foregroundColor: Colors.white,
               ),
               child: Text(isEditing ? 'Actualizar' : 'Crear'),
@@ -426,9 +438,9 @@ class _PagosPageState extends State<PagosPage> {
                   _showError('Los campos marcados con * son obligatorios');
                   return;
                 }
-                
+
                 Navigator.of(context).pop();
-                
+
                 if (isEditing) {
                   _updatePayment(payment['payment_id'], {
                     'user_id': int.tryParse(userIdController.text) ?? 0,
@@ -476,7 +488,8 @@ class _PagosPageState extends State<PagosPage> {
     }
   }
 
-  Future<void> _updatePayment(int paymentId, Map<String, dynamic> paymentData) async {
+  Future<void> _updatePayment(
+      int paymentId, Map<String, dynamic> paymentData) async {
     try {
       final response = await http.put(
         Uri.parse('http://localhost:3000/api_v1/payment/$paymentId'),
@@ -555,7 +568,6 @@ class _PagosPageState extends State<PagosPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Pagos"),
-        backgroundColor: const Color(0xFF2E7D7B),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
@@ -584,7 +596,7 @@ class _PagosPageState extends State<PagosPage> {
       ),
       drawer: CustomDrawer(
         username: "William",
-        currentIndex: 4, // índice de pagos
+        currentIndex: 4,
         onItemSelected: (index) {
           Navigator.pop(context);
           if (index == 0) {
@@ -603,7 +615,7 @@ class _PagosPageState extends State<PagosPage> {
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -611,7 +623,7 @@ class _PagosPageState extends State<PagosPage> {
             Container(
               margin: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
@@ -623,12 +635,12 @@ class _PagosPageState extends State<PagosPage> {
               ),
               child: TextField(
                 controller: searchController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Buscar por referencia, método, monto...',
-                  prefixIcon: Icon(Icons.search, color: Color(0xFF2E7D7B)),
+                  prefixIcon: Icon(Icons.search, color: AppTheme.primaryColor),
                   border: InputBorder.none,
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
               ),
             ),
@@ -638,7 +650,7 @@ class _PagosPageState extends State<PagosPage> {
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -655,17 +667,17 @@ class _PagosPageState extends State<PagosPage> {
                       children: [
                         Text(
                           '${filteredPayments.length}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF2E7D7B),
+                            color: AppTheme.primaryColor,
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Total Pagos',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey,
+                            color: Colors.grey[600],
                           ),
                         ),
                       ],
@@ -687,11 +699,11 @@ class _PagosPageState extends State<PagosPage> {
                             color: Colors.green,
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Monto Total',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey,
+                            color: Colors.grey[600],
                           ),
                         ),
                       ],
@@ -704,9 +716,9 @@ class _PagosPageState extends State<PagosPage> {
             // Lista de pagos
             Expanded(
               child: isLoading
-                  ? const Center(
+                  ? Center(
                       child: CircularProgressIndicator(
-                        color: Color(0xFF2E7D7B),
+                        color: AppTheme.primaryColor,
                       ),
                     )
                   : filteredPayments.isEmpty
@@ -733,7 +745,7 @@ class _PagosPageState extends State<PagosPage> {
                           ),
                         )
                       : RefreshIndicator(
-                          color: const Color(0xFF2E7D7B),
+                          color: AppTheme.primaryColor,
                           onRefresh: fetchPayments,
                           child: ListView.builder(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -750,7 +762,7 @@ class _PagosPageState extends State<PagosPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showCreateEditDialog(),
-        backgroundColor: const Color(0xFF2E7D7B),
+        backgroundColor: AppTheme.secondaryColor,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -758,7 +770,8 @@ class _PagosPageState extends State<PagosPage> {
 
   String _calculateTotalAmount() {
     double total = filteredPayments.fold(0, (sum, payment) {
-      double amount = double.tryParse(payment['amount_paid']?.toString() ?? '0') ?? 0;
+      double amount =
+          double.tryParse(payment['amount_paid']?.toString() ?? '0') ?? 0;
       return sum + amount;
     });
     return _formatCurrency(total);
@@ -776,7 +789,7 @@ class _PagosPageState extends State<PagosPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -817,10 +830,11 @@ class _PagosPageState extends State<PagosPage> {
                         children: [
                           Text(
                             'Pago #$paymentId',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                              color:
+                                  Theme.of(context).textTheme.bodyLarge?.color,
                             ),
                           ),
                           Text(
@@ -836,17 +850,21 @@ class _PagosPageState extends State<PagosPage> {
                       const SizedBox(height: 4),
                       Text(
                         'Usuario: $userId • $method',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: Colors.black54,
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.color
+                              ?.withOpacity(0.6),
                         ),
                       ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
                           Text(
-                            reference.length > 20 
-                                ? '${reference.substring(0, 20)}...' 
+                            reference.length > 20
+                                ? '${reference.substring(0, 20)}...'
                                 : reference,
                             style: const TextStyle(
                               fontSize: 12,
