@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:provider/provider.dart';
+import '../../models/amenity.dart';
+import '../../pages/providers/amenity_provider.dart';
+import '../../pages/providers/auth_provider.dart';
 import '../../widgets/navigation_drawer.dart';
 
 class ZonasComunesPage extends StatefulWidget {
@@ -11,44 +13,15 @@ class ZonasComunesPage extends StatefulWidget {
 }
 
 class _ZonasComunesPageState extends State<ZonasComunesPage> {
-  List<dynamic> amenities = [];
-  bool isLoading = true;
+  bool _showActiveOnly = true;
 
   @override
   void initState() {
     super.initState();
-    fetchAmenities();
-  }
-
-  Future<void> fetchAmenities() async {
-    try {
-      final response = await http.get(
-        Uri.parse('http://localhost:3000/api_v1/amenity'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['success']) {
-          setState(() {
-            amenities = data['data'];
-            isLoading = false;
-          });
-        }
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-        _showError('Error al cargar las amenidades');
-      }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      _showError('Error de conexión');
-    }
+    // Cargar las amenidades al iniciar la página
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AmenityProvider>(context, listen: false).fetchAmenities();
+    });
   }
 
   void _showError(String message) {
@@ -56,6 +29,15 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  void _showSuccess(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
       ),
     );
   }
@@ -88,35 +70,37 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
   }
 
   void _processReservation(int amenityId) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Reserva procesada correctamente'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    // En una versión futura, aquí se implementará la lógica de reservas
+    // usando un repositorio y provider específico para reservas
+    _showSuccess('Reserva procesada correctamente');
   }
 
   @override
   Widget build(BuildContext context) {
+    // Obtener datos del provider de autenticación para el drawer
+    final authProvider = Provider.of<AuthProvider>(context);
+    final username = authProvider.username ?? 'Usuario';
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Zonas Comunes"),
         backgroundColor: const Color(0xFF2E7D7B),
       ),
       drawer: CustomDrawer(
-        username: "William", // o pásalo dinámico si lo tienes en login
-        currentIndex: 0, // índice de esta vista
+        username: username,
+        currentIndex: 0,
         onItemSelected: (index) {
           Navigator.pop(context);
           if (index == 0) {
-            Navigator.pushReplacementNamed(context, '/zonas');
+            Navigator.pushReplacementNamed(context, '/zonas-comunes');
           } else if (index == 1) {
-            Navigator.pushReplacementNamed(context, '/clientes');
+            Navigator.pushReplacementNamed(context, '/propiedades');
           } else if (index == 2) {
-            Navigator.pushReplacementNamed(context, '/configuraciones');
+            Navigator.pushReplacementNamed(context, '/settings');
           }
         },
         onLogout: () {
+          authProvider.logout();
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),
@@ -130,41 +114,89 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildFilterButton('activas', true),
-                  _buildFilterButton('inactivas', false),
+                  _buildFilterButton('activas', _showActiveOnly),
+                  _buildFilterButton('inactivas', !_showActiveOnly),
                 ],
               ),
             ),
 
-            // Lista de amenidades
+            // Lista de amenidades usando Provider
             Expanded(
-              child: isLoading
-                  ? const Center(
+              child: Consumer<AmenityProvider>(
+                builder: (context, amenityProvider, child) {
+                  if (amenityProvider.isLoading) {
+                    return const Center(
                       child: CircularProgressIndicator(
                         color: Color(0xFF2E7D7B),
                       ),
-                    )
-                  : amenities.isEmpty
-                      ? Center(
-                          child: Text(
-                            'No hay zonas comunes disponibles',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
-                            ),
+                    );
+                  }
+                  
+                  if (amenityProvider.errorMessage != null) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            color: Colors.red,
+                            size: 48,
                           ),
-                        )
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: amenities.length,
-                          itemBuilder: (context, index) {
-                            final amenity = amenities[index];
-                            return _buildAmenityCard(amenity);
-                          },
+                          const SizedBox(height: 16),
+                          Text(
+                            amenityProvider.errorMessage!,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              amenityProvider.fetchAmenities();
+                            },
+                            child: const Text('Reintentar'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  
+                  // Filtrar amenidades según el filtro activo
+                  final filteredAmenities = amenityProvider.amenities.where((amenity) {
+                    return _showActiveOnly ? amenity.isAvailable : !amenity.isAvailable;
+                  }).toList();
+                  
+                  if (filteredAmenities.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No hay zonas comunes ${_showActiveOnly ? 'disponibles' : 'inactivas'}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
                         ),
+                      ),
+                    );
+                  }
+                  
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: filteredAmenities.length,
+                    itemBuilder: (context, index) {
+                      final amenity = filteredAmenities[index];
+                      return _buildAmenityCard(amenity);
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Refrescar datos
+          Provider.of<AmenityProvider>(context, listen: false).fetchAmenities();
+        },
+        backgroundColor: const Color(0xFF1B4B49),
+        child: const Icon(Icons.refresh),
       ),
     );
   }
@@ -175,7 +207,9 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
         margin: const EdgeInsets.symmetric(horizontal: 4),
         child: ElevatedButton(
           onPressed: () {
-            // Implementar lógica de filtros
+            setState(() {
+              _showActiveOnly = text == 'activas';
+            });
           },
           style: ElevatedButton.styleFrom(
             backgroundColor:
@@ -199,16 +233,12 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
     );
   }
 
-  Widget _buildAmenityCard(dynamic amenity) {
-    String amenityName =
-        amenity['name']?.toString().toUpperCase() ?? 'AMENIDAD';
-    String description = amenity['description'] ?? 'Sin descripción';
-    int amenityId = amenity['amenity_id'] ?? 0;
-    String status = amenity['status_name'] ?? 'Desconocido';
-
-    bool isAvailable = status.toLowerCase() == 'activo' ||
-        status.toLowerCase() == 'available' ||
-        status.toLowerCase() == 'disponible';
+  Widget _buildAmenityCard(Amenity amenity) {
+    String amenityName = amenity.name.toUpperCase();
+    String description = amenity.description ?? 'Sin descripción';
+    int amenityId = amenity.id;
+    String status = amenity.status ?? 'Desconocido';
+    bool isAvailable = amenity.isAvailable;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),

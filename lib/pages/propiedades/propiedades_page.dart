@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:convert';
 import '../../widgets/navigation_drawer.dart';
+import '../providers/property_provider.dart';
+import '../providers/auth_provider.dart'; // Added import for AuthProvider
+import '../../models/property.dart';
+import 'property_list_screen.dart';
 
 class PropiedadesPage extends StatefulWidget {
   const PropiedadesPage({super.key});
@@ -169,15 +174,17 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the auth provider to access user information
+    final authProvider = Provider.of<AuthProvider>(context);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Propiedades"),
         backgroundColor: const Color(0xFF2E7D7B),
       ),
       drawer: CustomDrawer(
-        username: "William", // o pásalo dinámico si lo tienes en login
-        currentIndex:
-            1, // índice de esta vista (asumiendo que propiedades es índice 1)
+        username: authProvider.name ?? authProvider.username ?? "Usuario", // Dynamic username from auth provider
+        currentIndex: 1, // índice de esta vista (asumiendo que propiedades es índice 1)
         onItemSelected: (index) {
           Navigator.pop(context);
           if (index == 0) {
@@ -195,6 +202,7 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
         },
       ),
       backgroundColor: const Color(0xFFF5F5F5),
+      // Removed the "Ver Propiedades" floating button as it's not needed
       body: SafeArea(
         child: Column(
           children: [

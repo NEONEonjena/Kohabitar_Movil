@@ -1,3 +1,13 @@
+/**
+ * CustomAppBar
+ * 
+ * Este widget proporciona una barra de aplicación personalizada con 
+ * funcionalidades configurables como mostrar un botón de retroceso,
+ * un botón de menú o acciones adicionales.
+ * 
+ * Se utiliza en toda la aplicación para mantener una apariencia consistente
+ * en las diferentes pantallas.
+ */
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {

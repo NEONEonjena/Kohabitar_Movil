@@ -4,7 +4,7 @@ import 'change_password_dialog.dart';
 import '../providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import '../providers/locale_provider.dart';
-import '../../widgets/navigation_drawer.dart'; // 👈 Importa tu Drawer
+import '../../widgets/navigation_drawer.dart'; // Importa tu Drawer
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -13,10 +13,10 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: CustomDrawer(
-        username: "Usuario Demo", // 👈 aquí pasas el usuario real
-        currentIndex: 2, // 👈 índice para resaltar "Configuración" en el menú
+        username: "Usuario Demo", // aquí se pasa el usuario real
+        currentIndex: 2, // índice para resaltar "Configuración" en el menú
         onItemSelected: (index) {
-          Navigator.pop(context); // cerrar Drawer
+          Navigator.pop(context); // se cierra el Drawer
           if (index == 0) {
             Navigator.pushReplacementNamed(context, '/zonasComunes');
           } else if (index == 1) {

@@ -273,7 +273,6 @@ class _VisitantesPageState extends State<VisitantesPage> {
   }
 
   void _processExit(dynamic visitor) {
-    // Aquí implementarías la lógica para marcar la salida
     _showSuccess('Salida registrada correctamente');
     fetchVisitors(); // Recargar lista
   }

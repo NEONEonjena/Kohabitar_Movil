@@ -53,20 +53,20 @@ class _LoginPageState extends State<LoginPage> {
       final password = _passwordController.text.trim();
 
       try {
-        // Guardamos la sesión en el provider
+        // Se guarda la sesión en el provider
         final auth = Provider.of<AuthProvider>(context, listen: false);
         await auth.login(username, password);
 
-        print('Login successful, navigating to home...'); // Debug
+        print('Inicio de sesión exitoso, navegando a la página principal...'); // Depuración
 
-        // Redirigimos al Home usando pushAndRemoveUntil para limpiar el stack
+        // Se redirecciona al Home usando pushAndRemoveUntil para limpiar el stack
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
           (route) => false,
         );
       } catch (e) {
-        print('Login error: $e');
+        print('Error durante el login: $e');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error durante el login: $e')),
         );
@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 controller: _usernameController,
                 decoration: const InputDecoration(
-                  labelText: 'Username (email)',
+                  labelText: 'Usuario (email)',
                   prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
                 ),
@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                     return 'Por favor ingrese su usuario';
                   }
                   const emailPattern =
-                      r'^[^@]+@[^@]+\.[^@]+$'; // Simple email validation
+                      r'^[^@]+@[^@]+\.[^@]+$';
                   if (!RegExp(emailPattern).hasMatch(value)) {
                     return 'Por favor ingrese un email válido';
                   }
@@ -114,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 controller: _passwordController,
                 decoration: const InputDecoration(
-                  labelText: 'Password',
+                  labelText: 'Contraseña',
                   prefixIcon: Icon(Icons.lock),
                   border: OutlineInputBorder(),
                 ),
@@ -136,11 +136,11 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _login,
-                child: const Text('Login'),
+                child: const Text('Iniciar sesión'),
               ),
               TextButton(
                 onPressed: _navigateToRegistration,
-                child: const Text('Register'),
+                child: const Text('Registrarse'),
               ),
             ],
           ),

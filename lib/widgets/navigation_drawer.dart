@@ -1,3 +1,20 @@
+/**
+ * CustomDrawer
+ * 
+ * Este widget implementa el panel lateral de navegación de la aplicación.
+ * Muestra la información del usuario actual y proporciona acceso a todas
+ * las secciones principales de la aplicación.
+ * 
+ * El menú lateral incluye opciones para:
+ * - Usuarios
+ * - Propiedades
+ * - Parqueaderos
+ * - Visitantes
+ * - Zonas comunes
+ * - Y otras funcionalidades del sistema
+ * 
+ * También incluye una opción para cerrar la sesión del usuario.
+ */
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -27,6 +44,9 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
+  /**
+   * Construye el encabezado del drawer que muestra la información del usuario
+   */
   Widget _buildHeader(BuildContext context) {
     return DrawerHeader(
       decoration: BoxDecoration(
@@ -72,6 +92,9 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
+  /**
+   * Construye la lista de opciones de menú del panel lateral
+   */
   Widget _buildMenuItems(BuildContext context) {
     return Column(
       children: [
@@ -158,6 +181,14 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
+  /**
+   * Construye un elemento del menú con estilo personalizado
+   * 
+   * @param icon Icono para el elemento del menú
+   * @param title Texto del elemento
+   * @param index Índice asociado a la opción
+   * @param isSelected Indica si este elemento está seleccionado actualmente
+   */
   Widget _buildListTile(
     BuildContext context,
     IconData icon,
@@ -185,9 +216,9 @@ class CustomDrawer extends StatelessWidget {
             )
           : null,
       onTap: () {
-        Navigator.pop(context); // Cierra el Drawer
+        Navigator.pop(context); // Se cierra el panel lateral
 
-        // Rutas según índice
+        // Lista de rutas disponibles según el índice seleccionado
         final routes = [
           '/usuarios',
           '/propiedades',
@@ -211,6 +242,9 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
+  /**
+   * Construye el elemento para cerrar sesión con estilo diferenciado
+   */
   Widget _buildLogoutTile(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.logout, color: Colors.red),
@@ -219,8 +253,8 @@ class CustomDrawer extends StatelessWidget {
         style: TextStyle(color: Colors.red),
       ),
       onTap: () {
-        Navigator.pop(context); // Cerrar el drawer
-        onLogout();
+        Navigator.pop(context); // Se cierra el panel lateral primero
+        onLogout(); // Se ejecuta la función de cierre de sesión
       },
     );
   }

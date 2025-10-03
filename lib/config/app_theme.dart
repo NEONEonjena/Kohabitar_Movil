@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Colores principales
+  // Colores principales de la aplicación
   static const Color primaryColor = Color(0xFF1B6771);
   static const Color secondaryColor = Color(0xFF30979A);
   static const Color accentColor = Color(0xFF00BFA5);
 
-  // Tema claro
+  // Configuración del tema claro
   static ThemeData get lightTheme => ThemeData(
         brightness: Brightness.light,
         primaryColor: primaryColor,
@@ -80,7 +80,7 @@ class AppTheme {
         ),
       );
 
-  // Tema oscuro
+  // Configuración del tema oscuro
   static ThemeData get darkTheme => ThemeData(
         brightness: Brightness.dark,
         primaryColor: secondaryColor,

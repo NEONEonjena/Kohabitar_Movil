@@ -61,11 +61,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         );
         return;
       }
+      // Por ejemplo, se verificaría la contraseña actual y se actualizaría con la nueva
 
-      // Aquí implementarías la lógica para cambiar la contraseña
-      // Por ejemplo, verificar la contraseña actual y actualizar con la nueva
-
-      Navigator.of(context).pop(true); // Retorna true si fue exitoso
+      Navigator.of(context).pop(true); // Se retorna true si fue exitoso
     }
   }
 

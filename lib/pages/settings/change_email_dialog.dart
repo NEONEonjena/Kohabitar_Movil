@@ -30,10 +30,9 @@ class _ChangeEmailDialogState extends State<ChangeEmailDialog> {
         return;
       }
 
-      // Aquí implementarías la lógica para cambiar el email
-      // Por ejemplo, llamar a tu API o servicio de autenticación
+      // Por ejemplo, se llamaría a la API o servicio de autenticación
 
-      Navigator.of(context).pop(true); // Retorna true si fue exitoso
+      Navigator.of(context).pop(true); // Se retorna true si fue exitoso
     }
   }
 

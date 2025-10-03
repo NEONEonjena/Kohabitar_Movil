@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
 
     _pages = [
       HomeContent(username: auth.username ?? 'Invitado'),
-      UserScreen(username: auth.username ?? '', password: auth.password ?? ''),
+      UserProfilePage(),
       const settings.SettingsPage(),
     ];
 
