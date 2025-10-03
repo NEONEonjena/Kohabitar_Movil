@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../widgets/navigation_drawer.dart';
+import '../../config/app_theme.dart';
 
 class PqrsPage extends StatefulWidget {
   const PqrsPage({super.key});
@@ -66,10 +67,13 @@ class _PqrsPageState extends State<PqrsPage> {
         filteredPqrs = pqrsList;
       } else {
         filteredPqrs = pqrsList.where((pqrs) {
-          String description = pqrs['CPCG_description']?.toString().toLowerCase() ?? '';
+          String description =
+              pqrs['CPCG_description']?.toString().toLowerCase() ?? '';
           String userName = pqrs['user_name']?.toString().toLowerCase() ?? '';
-          String typeName = pqrs['CPCG_type_name']?.toString().toLowerCase() ?? '';
-          String statusName = pqrs['status_name']?.toString().toLowerCase() ?? '';
+          String typeName =
+              pqrs['CPCG_type_name']?.toString().toLowerCase() ?? '';
+          String statusName =
+              pqrs['status_name']?.toString().toLowerCase() ?? '';
           return description.contains(query) ||
               userName.contains(query) ||
               typeName.contains(query) ||
@@ -165,11 +169,11 @@ class _PqrsPageState extends State<PqrsPage> {
     Color? color,
   }) {
     return ListTile(
-      leading: Icon(icon, color: color ?? const Color(0xFF2E7D7B)),
+      leading: Icon(icon, color: color ?? AppTheme.primaryColor),
       title: Text(
         title,
         style: TextStyle(
-          color: color ?? Colors.black87,
+          color: color ?? Theme.of(context).textTheme.bodyLarge?.color,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -189,7 +193,8 @@ class _PqrsPageState extends State<PqrsPage> {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: _getTypeColor(pqrs['CPCG_type_name']).withOpacity(0.2),
+                backgroundColor:
+                    _getTypeColor(pqrs['CPCG_type_name']).withOpacity(0.2),
                 child: Icon(
                   _getTypeIcon(pqrs['CPCG_type_name']),
                   color: _getTypeColor(pqrs['CPCG_type_name']),
@@ -210,12 +215,17 @@ class _PqrsPageState extends State<PqrsPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildDetailRow('Tipo', pqrs['CPCG_type_name'] ?? 'No disponible'),
-                _buildDetailRow('Usuario', pqrs['user_name'] ?? 'No disponible'),
-                _buildDetailRow('Propiedad', pqrs['property_name'] ?? 'No disponible'),
-                _buildDetailRow('Estado', pqrs['status_name'] ?? 'No disponible'),
+                _buildDetailRow(
+                    'Tipo', pqrs['CPCG_type_name'] ?? 'No disponible'),
+                _buildDetailRow(
+                    'Usuario', pqrs['user_name'] ?? 'No disponible'),
+                _buildDetailRow(
+                    'Propiedad', pqrs['property_name'] ?? 'No disponible'),
+                _buildDetailRow(
+                    'Estado', pqrs['status_name'] ?? 'No disponible'),
                 _buildDetailRow('Creado', _formatDate(pqrs['CPCG_createAt'])),
-                _buildDetailRow('Actualizado', _formatDate(pqrs['CPCG_updateAt'])),
+                _buildDetailRow(
+                    'Actualizado', _formatDate(pqrs['CPCG_updateAt'])),
                 const SizedBox(height: 8),
                 const Text(
                   'Descripción:',
@@ -229,7 +239,9 @@ class _PqrsPageState extends State<PqrsPage> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey[800]
+                        : Colors.grey[100],
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -341,7 +353,7 @@ class _PqrsPageState extends State<PqrsPage> {
             backgroundColor: Colors.green,
           ),
         );
-        fetchPqrs(); // Recargar la lista
+        fetchPqrs();
       } else {
         _showError('Error al actualizar el estado');
       }
@@ -405,7 +417,7 @@ class _PqrsPageState extends State<PqrsPage> {
             backgroundColor: Colors.green,
           ),
         );
-        fetchPqrs(); // Recargar la lista
+        fetchPqrs();
       } else {
         _showError('Error al eliminar la PQRS');
       }
@@ -479,11 +491,10 @@ class _PqrsPageState extends State<PqrsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("PQRS"),
-        backgroundColor: const Color(0xFF2E7D7B),
       ),
       drawer: CustomDrawer(
         username: "William",
-        currentIndex: 4, // índice de PQRS
+        currentIndex: 4,
         onItemSelected: (index) {
           Navigator.pop(context);
           if (index == 0) {
@@ -502,7 +513,7 @@ class _PqrsPageState extends State<PqrsPage> {
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -510,7 +521,7 @@ class _PqrsPageState extends State<PqrsPage> {
             Container(
               margin: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
@@ -522,12 +533,12 @@ class _PqrsPageState extends State<PqrsPage> {
               ),
               child: TextField(
                 controller: searchController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Buscar PQRS...',
-                  prefixIcon: Icon(Icons.search, color: Color(0xFF2E7D7B)),
+                  prefixIcon: Icon(Icons.search, color: AppTheme.primaryColor),
                   border: InputBorder.none,
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
               ),
             ),
@@ -535,9 +546,9 @@ class _PqrsPageState extends State<PqrsPage> {
             // Lista de PQRS
             Expanded(
               child: isLoading
-                  ? const Center(
+                  ? Center(
                       child: CircularProgressIndicator(
-                        color: Color(0xFF2E7D7B),
+                        color: AppTheme.primaryColor,
                       ),
                     )
                   : filteredPqrs.isEmpty
@@ -564,7 +575,7 @@ class _PqrsPageState extends State<PqrsPage> {
                           ),
                         )
                       : RefreshIndicator(
-                          color: const Color(0xFF2E7D7B),
+                          color: AppTheme.primaryColor,
                           onRefresh: fetchPqrs,
                           child: ListView.builder(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -588,7 +599,7 @@ class _PqrsPageState extends State<PqrsPage> {
             ),
           );
         },
-        backgroundColor: const Color(0xFF2E7D7B),
+        backgroundColor: AppTheme.secondaryColor,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -599,13 +610,14 @@ class _PqrsPageState extends State<PqrsPage> {
     String typeName = pqrs['CPCG_type_name']?.toString() ?? 'Sin tipo';
     String userName = pqrs['user_name']?.toString() ?? 'Sin usuario';
     String statusName = pqrs['status_name']?.toString() ?? 'Sin estado';
-    String description = pqrs['CPCG_description']?.toString() ?? 'Sin descripción';
+    String description =
+        pqrs['CPCG_description']?.toString() ?? 'Sin descripción';
     String createDate = _formatDate(pqrs['CPCG_createAt']);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -645,17 +657,20 @@ class _PqrsPageState extends State<PqrsPage> {
                         children: [
                           Text(
                             'PQRS #$pqrsId',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                              color:
+                                  Theme.of(context).textTheme.bodyLarge?.color,
                             ),
                           ),
                           const Spacer(),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: _getStatusColor(statusName).withOpacity(0.2),
+                              color:
+                                  _getStatusColor(statusName).withOpacity(0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -682,9 +697,13 @@ class _PqrsPageState extends State<PqrsPage> {
                           ),
                           Text(
                             ' • $userName',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
-                              color: Colors.black54,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.color
+                                  ?.withOpacity(0.6),
                             ),
                           ),
                         ],
@@ -692,9 +711,13 @@ class _PqrsPageState extends State<PqrsPage> {
                       const SizedBox(height: 6),
                       Text(
                         _truncateText(description, 80),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
-                          color: Colors.black54,
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.color
+                              ?.withOpacity(0.6),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

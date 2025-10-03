@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../widgets/navigation_drawer.dart';
+import '../../config/app_theme.dart';
 
 class PropiedadesPage extends StatefulWidget {
   const PropiedadesPage({super.key});
@@ -32,7 +33,6 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
         },
       );
 
-      // ✅ Cambio 1: Acepta status 201
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = json.decode(response.body);
         setState(() {
@@ -55,7 +55,6 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
     }
   }
 
-  // ✅ Cambio 2: Filtro basado en tipo de propiedad (ya que no hay status)
   void _applyFilter(String filter) {
     setState(() {
       currentFilter = filter;
@@ -63,12 +62,14 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
         filteredProperties = properties;
       } else if (filter == 'casa') {
         filteredProperties = properties.where((property) {
-          String type = property['property_type']?.toString().toLowerCase() ?? '';
+          String type =
+              property['property_type']?.toString().toLowerCase() ?? '';
           return type.contains('casa');
         }).toList();
       } else if (filter == 'apartamento') {
         filteredProperties = properties.where((property) {
-          String type = property['property_type']?.toString().toLowerCase() ?? '';
+          String type =
+              property['property_type']?.toString().toLowerCase() ?? '';
           return type.contains('apartamento');
         }).toList();
       }
@@ -105,7 +106,6 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
                 style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 8),
-              // ✅ Cambio 3: Eliminado el campo status_name que no existe
               Text(
                 'Creado: ${_formatDate(property['property_createAt'])}',
                 style: TextStyle(
@@ -150,7 +150,6 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Propiedades"),
-        backgroundColor: const Color(0xFF2E7D7B),
       ),
       drawer: CustomDrawer(
         username: "William",
@@ -171,11 +170,11 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Column(
           children: [
-            // ✅ Cambio 4: Botones de filtro por tipo de propiedad
+            // Botones de filtro por tipo de propiedad
             Container(
               margin: const EdgeInsets.all(16),
               child: Row(
@@ -202,13 +201,15 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ],                )),
+                  ],
+                ),
+              ),
 
             Expanded(
               child: isLoading
-                  ? const Center(
+                  ? Center(
                       child: CircularProgressIndicator(
-                        color: Color(0xFF2E7D7B),
+                        color: AppTheme.secondaryColor,
                       ),
                     )
                   : filteredProperties.isEmpty
@@ -235,7 +236,7 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
                           ),
                         )
                       : RefreshIndicator(
-                          color: const Color(0xFF2E7D7B),
+                          color: AppTheme.secondaryColor,
                           onRefresh: fetchProperties,
                           child: ListView.builder(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -262,7 +263,7 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
           onPressed: () => _applyFilter(filterValue),
           style: ElevatedButton.styleFrom(
             backgroundColor:
-                isSelected ? const Color(0xFF1B4B49) : const Color(0xFF4A9B99),
+                isSelected ? AppTheme.primaryColor : AppTheme.secondaryColor,
             foregroundColor: Colors.white,
             elevation: 0,
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -291,7 +292,7 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -313,19 +314,19 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
               children: [
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.home_work,
-                      color: Color(0xFF2E7D7B),
+                      color: AppTheme.primaryColor,
                       size: 20,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         propertyName,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF2E7D7B),
+                          color: AppTheme.primaryColor,
                         ),
                       ),
                     ),
@@ -336,25 +337,26 @@ class _PropiedadesPageState extends State<PropiedadesPage> {
                   description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[700],
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.grey[700],
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
-                // ✅ Cambio 5: Eliminado el indicador de status que no existe
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF2E7D7B).withOpacity(0.1),
+                    color: AppTheme.primaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     propertyType,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF2E7D7B),
+                      color: AppTheme.primaryColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
