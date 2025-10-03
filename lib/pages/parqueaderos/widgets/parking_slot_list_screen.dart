@@ -6,7 +6,7 @@ import '../providers/parking_slot_provider.dart';
 class ParkingSlotListScreen extends StatefulWidget {
   final int? parkingZoneId;
   
-  const ParkingSlotListScreen({Key? key, this.parkingZoneId}) : super(key: key);
+  const ParkingSlotListScreen({super.key, this.parkingZoneId});
 
   @override
   _ParkingSlotListScreenState createState() => _ParkingSlotListScreenState();
@@ -189,8 +189,8 @@ class _ParkingSlotListScreenState extends State<ParkingSlotListScreen> {
       floatingActionButton: widget.parkingZoneId != null
           ? FloatingActionButton(
               onPressed: () => _showAddSlotDialog(context),
-              child: const Icon(Icons.add),
               tooltip: 'Añadir Espacio',
+              child: const Icon(Icons.add),
             )
           : null,
     );

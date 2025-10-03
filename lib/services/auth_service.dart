@@ -1,13 +1,12 @@
-/**
- * Servicio de Autenticación
- * 
- * Este servicio maneja todas las operaciones relacionadas con la autenticación de usuarios.
- * Proporciona métodos para iniciar sesión, cerrar sesión y verificar el estado de autenticación.
- * 
- * Capa en la arquitectura: Services (Servicios)
- * - Depende de: ApiClient
- * - Utilizado por: AuthRepository
- */
+/// Servicio de Autenticación
+/// 
+/// Este servicio maneja todas las operaciones relacionadas con la autenticación de usuarios.
+/// Proporciona métodos para iniciar sesión, cerrar sesión y verificar el estado de autenticación.
+/// 
+/// Capa en la arquitectura: Services (Servicios)
+/// - Depende de: ApiClient
+/// - Utilizado por: AuthRepository
+library;
 
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/network/api_client.dart';
@@ -18,25 +17,21 @@ class AuthService {
   // Cliente API para realizar peticiones al servidor
   final ApiClient _apiClient;
   
-  /**
-   * Constructor del servicio
-   * 
-   * Permite inyección de dependencias para facilitar pruebas unitarias
-   * 
-   * @param apiClient Cliente API a utilizar (opcional, usa el singleton por defecto)
-   */
+  /// Constructor del servicio
+  /// 
+  /// Permite inyección de dependencias para facilitar pruebas unitarias
+  /// 
+  /// @param apiClient Cliente API a utilizar (opcional, usa el singleton por defecto)
   AuthService({ApiClient? apiClient}) 
       : _apiClient = apiClient ?? ApiClient();
   
-  /**
-   * Realiza inicio de sesión con nombre de usuario y contraseña
-   * 
-   * Endpoint: POST /auth/login
-   * 
-   * @param username Nombre de usuario
-   * @param password Contraseña del usuario
-   * @return Usuario autenticado o null si falla la autenticación
-   */
+  /// Realiza inicio de sesión con nombre de usuario y contraseña
+  /// 
+  /// Endpoint: POST /auth/login
+  /// 
+  /// @param username Nombre de usuario
+  /// @param password Contraseña del usuario
+  /// @return Usuario autenticado o null si falla la autenticación
   Future<User?> login(String username, String password) async {
     try {
       // Realiza la petición de login al servidor
@@ -74,11 +69,9 @@ class AuthService {
     }
   }
 
-  /**
-   * Verifica si el usuario se encuentra autenticado
-   * 
-   * @return true si el usuario está autenticado, false en caso contrario
-   */
+  /// Verifica si el usuario se encuentra autenticado
+  /// 
+  /// @return true si el usuario está autenticado, false en caso contrario
   Future<bool> isAuthenticated() async {
     try {
       // Obtiene el token guardado
@@ -104,9 +97,7 @@ class AuthService {
     }
   }
 
-  /**
-   * Cierra la sesión activa del usuario
-   */
+  /// Cierra la sesión activa del usuario
   Future<void> logout() async {
     try {
       // Elimina todos los datos de sesión
@@ -127,12 +118,10 @@ class AuthService {
     }
   }
 
-  /**
-   * Guarda los datos de la sesión en el almacenamiento local del dispositivo
-   * 
-   * @param token Token de autenticación
-   * @param userData Datos del usuario
-   */
+  /// Guarda los datos de la sesión en el almacenamiento local del dispositivo
+  /// 
+  /// @param token Token de autenticación
+  /// @param userData Datos del usuario
   Future<void> _saveUserSession(String token, Map<String, dynamic> userData) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -179,11 +168,9 @@ class AuthService {
     }
   }
 
-  /**
-   * Recupera la información del usuario actual desde el almacenamiento local
-   * 
-   * @return Usuario actual o null si no hay sesión activa
-   */
+  /// Recupera la información del usuario actual desde el almacenamiento local
+  /// 
+  /// @return Usuario actual o null si no hay sesión activa
   Future<User?> getCurrentUser() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -236,12 +223,10 @@ class AuthService {
     }
   }
 
-  /**
-   * Valida la autenticidad del token actual con el servidor
-   * 
-   * @param token Token a verificar
-   * @return ApiResponse con booleano indicando validez del token
-   */
+  /// Valida la autenticidad del token actual con el servidor
+  /// 
+  /// @param token Token a verificar
+  /// @return ApiResponse con booleano indicando validez del token
   Future<ApiResponse<bool>> verifyToken(String token) async {
     return _apiClient.post<bool>(
       '${ApiConstants.apiVersion}/auth/verify-token',

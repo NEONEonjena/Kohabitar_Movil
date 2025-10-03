@@ -1,9 +1,8 @@
-/**
- * Proveedor de Autenticación
- * 
- * Esta clase gestiona el estado de autenticación del usuario en la aplicación
- * y notifica a los widgets cuando hay cambios en este estado.
- */
+/// Proveedor de Autenticación
+/// 
+/// Esta clase gestiona el estado de autenticación del usuario en la aplicación
+/// y notifica a los widgets cuando hay cambios en este estado.
+library;
 
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';

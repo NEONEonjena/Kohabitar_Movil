@@ -1,9 +1,8 @@
-/**
- * Modelo ParkingSlot
- * 
- * Esta clase representa un espacio específico de parqueo dentro de una zona.
- * Contiene información sobre su código, estado, tarifas y otros detalles relevantes.
- */
+/// Modelo ParkingSlot
+/// 
+/// Esta clase representa un espacio específico de parqueo dentro de una zona.
+/// Contiene información sobre su código, estado, tarifas y otros detalles relevantes.
+library;
 
 class ParkingSlot {
   final int id;

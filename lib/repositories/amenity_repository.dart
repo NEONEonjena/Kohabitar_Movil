@@ -1,41 +1,36 @@
-/**
- * Repositorio de Zonas Comunes (Amenity Repository)
- * 
- * Esta clase implementa la lógica de negocio relacionada con las zonas comunes
- * (amenidades) del conjunto residencial. Actúa como una capa de abstracción entre
- * los providers (UI) y los servicios que se comunican directamente con la API.
- * 
- * Responsabilidades:
- * - Proporcionar métodos con parámetros tipados (no solo mapas)
- * - Manejar excepciones y proporcionar mensajes de error claros
- * - Convertir respuestas de API en modelos de dominio
- * 
- * Capa en la arquitectura: Repositories (Repositorios)
- * - Depende de: AmenityService
- * - Utilizado por: Providers (AmenityProvider, ZonasComunesProvider, etc.)
- */
+/// Repositorio de Zonas Comunes (Amenity Repository)
+/// 
+/// Esta clase implementa la lógica de negocio relacionada con las zonas comunes
+/// (amenidades) del conjunto residencial. Actúa como una capa de abstracción entre
+/// los providers (UI) y los servicios que se comunican directamente con la API.
+/// 
+/// Responsabilidades:
+/// - Proporcionar métodos con parámetros tipados (no solo mapas)
+/// - Manejar excepciones y proporcionar mensajes de error claros
+/// - Convertir respuestas de API en modelos de dominio
+/// 
+/// Capa en la arquitectura: Repositories (Repositorios)
+/// - Depende de: AmenityService
+/// - Utilizado por: Providers (AmenityProvider, ZonasComunesProvider, etc.)
+library;
 import '../models/amenity.dart';
 import '../services/amenity_service.dart';
 
 class AmenityRepository {
   final AmenityService _amenityService;
   
-  /**
-   * Constructor del repositorio
-   * 
-   * Permite inyección de dependencias para facilitar pruebas unitarias
-   * 
-   * @param amenityService Servicio de zonas comunes a utilizar (opcional)
-   */
+  /// Constructor del repositorio
+  /// 
+  /// Permite inyección de dependencias para facilitar pruebas unitarias
+  /// 
+  /// @param amenityService Servicio de zonas comunes a utilizar (opcional)
   AmenityRepository({AmenityService? amenityService}) 
       : _amenityService = amenityService ?? AmenityService();
   
-  /**
-   * Obtiene todas las zonas comunes disponibles
-   * 
-   * @return Lista de objetos Amenity
-   * @throws Exception si ocurre un error al obtener los datos
-   */
+  /// Obtiene todas las zonas comunes disponibles
+  /// 
+  /// @return Lista de objetos Amenity
+  /// @throws Exception si ocurre un error al obtener los datos
   Future<List<Amenity>> getAllAmenities() async {
     try {
       final response = await _amenityService.getAmenities();
@@ -50,13 +45,11 @@ class AmenityRepository {
     }
   }
   
-  /**
-   * Obtiene una zona común por su identificador
-   * 
-   * @param id Identificador único de la zona común
-   * @return Objeto Amenity con los datos de la zona común
-   * @throws Exception si la zona común no existe o hay un error
-   */
+  /// Obtiene una zona común por su identificador
+  /// 
+  /// @param id Identificador único de la zona común
+  /// @return Objeto Amenity con los datos de la zona común
+  /// @throws Exception si la zona común no existe o hay un error
   Future<Amenity> getAmenityById(int id) async {
     try {
       final response = await _amenityService.getAmenityById(id);
@@ -71,15 +64,13 @@ class AmenityRepository {
     }
   }
   
-  /**
-   * Crea una nueva zona común
-   * 
-   * @param name Nombre de la zona común (requerido)
-   * @param description Descripción de la zona común (opcional)
-   * @param capacity Capacidad máxima de personas (opcional)
-   * @return Objeto Amenity con los datos de la zona común creada
-   * @throws Exception si hay un error durante la creación
-   */
+  /// Crea una nueva zona común
+  /// 
+  /// @param name Nombre de la zona común (requerido)
+  /// @param description Descripción de la zona común (opcional)
+  /// @param capacity Capacidad máxima de personas (opcional)
+  /// @return Objeto Amenity con los datos de la zona común creada
+  /// @throws Exception si hay un error durante la creación
   Future<Amenity> createAmenity({
     required String name,
     String? description,
@@ -105,17 +96,15 @@ class AmenityRepository {
     }
   }
   
-  /**
-   * Actualiza una zona común existente
-   * 
-   * @param id Identificador único de la zona común a actualizar
-   * @param name Nuevo nombre (opcional)
-   * @param description Nueva descripción (opcional)
-   * @param capacity Nueva capacidad máxima (opcional)
-   * @param status Nuevo estado (opcional)
-   * @return Objeto Amenity con los datos actualizados
-   * @throws Exception si hay un error durante la actualización
-   */
+  /// Actualiza una zona común existente
+  /// 
+  /// @param id Identificador único de la zona común a actualizar
+  /// @param name Nuevo nombre (opcional)
+  /// @param description Nueva descripción (opcional)
+  /// @param capacity Nueva capacidad máxima (opcional)
+  /// @param status Nuevo estado (opcional)
+  /// @return Objeto Amenity con los datos actualizados
+  /// @throws Exception si hay un error durante la actualización
   Future<Amenity> updateAmenity(int id, {
     String? name,
     String? description,
@@ -143,13 +132,11 @@ class AmenityRepository {
     }
   }
   
-  /**
-   * Elimina una zona común
-   * 
-   * @param id Identificador único de la zona común a eliminar
-   * @return true si la eliminación fue exitosa
-   * @throws Exception si hay un error durante la eliminación
-   */
+  /// Elimina una zona común
+  /// 
+  /// @param id Identificador único de la zona común a eliminar
+  /// @return true si la eliminación fue exitosa
+  /// @throws Exception si hay un error durante la eliminación
   Future<bool> deleteAmenity(int id) async {
     try {
       final response = await _amenityService.deleteAmenity(id);

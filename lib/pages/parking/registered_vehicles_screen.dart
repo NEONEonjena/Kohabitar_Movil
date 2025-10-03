@@ -5,7 +5,7 @@ import '../../pages/providers/vehicle_provider.dart';
 import './assign_vehicle_screen.dart';
 
 class RegisteredVehiclesScreen extends StatefulWidget {
-  const RegisteredVehiclesScreen({Key? key}) : super(key: key);
+  const RegisteredVehiclesScreen({super.key});
 
   @override
   State<RegisteredVehiclesScreen> createState() => _RegisteredVehiclesScreenState();

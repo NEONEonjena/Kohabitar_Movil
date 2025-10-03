@@ -1,20 +1,19 @@
-/**
- * Provider de Zonas Comunes (Amenity Provider)
- * 
- * Esta clase gestiona el estado relacionado con las zonas comunes (amenidades)
- * y proporciona métodos para interactuar con ellas desde la interfaz de usuario.
- * Implementa el patrón Provider mediante ChangeNotifier para notificar a los widgets
- * cuando el estado cambia.
- * 
- * Características principales:
- * - Gestión de estado (cargando, error, datos)
- * - Operaciones CRUD completas para zonas comunes
- * - Notificación automática de cambios a la UI
- * 
- * Capa en la arquitectura: Providers (UI State Management)
- * - Depende de: AmenityRepository
- * - Utilizado por: Pages y Widgets
- */
+/// Provider de Zonas Comunes (Amenity Provider)
+/// 
+/// Esta clase gestiona el estado relacionado con las zonas comunes (amenidades)
+/// y proporciona métodos para interactuar con ellas desde la interfaz de usuario.
+/// Implementa el patrón Provider mediante ChangeNotifier para notificar a los widgets
+/// cuando el estado cambia.
+/// 
+/// Características principales:
+/// - Gestión de estado (cargando, error, datos)
+/// - Operaciones CRUD completas para zonas comunes
+/// - Notificación automática de cambios a la UI
+/// 
+/// Capa en la arquitectura: Providers (UI State Management)
+/// - Depende de: AmenityRepository
+/// - Utilizado por: Pages y Widgets
+library;
 import 'package:flutter/material.dart';
 import '../../models/amenity.dart';
 import '../../repositories/amenity_repository.dart';
@@ -27,25 +26,19 @@ class AmenityProvider extends ChangeNotifier {
   bool _isLoading = false;           // Indicador de carga
   String? _errorMessage;             // Mensaje de error (si existe)
   
-  /**
-   * Getters para acceder al estado de forma inmutable
-   */
+  /// Getters para acceder al estado de forma inmutable
   List<Amenity> get amenities => _amenities;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   
-  /**
-   * Constructor del provider
-   * 
-   * @param amenityRepository Repositorio de zonas comunes a utilizar (opcional)
-   */
+  /// Constructor del provider
+  /// 
+  /// @param amenityRepository Repositorio de zonas comunes a utilizar (opcional)
   AmenityProvider({AmenityRepository? amenityRepository}) 
       : _amenityRepository = amenityRepository ?? AmenityRepository();
   
-  /**
-   * Obtiene todas las zonas comunes desde el repositorio
-   * y actualiza el estado local
-   */
+  /// Obtiene todas las zonas comunes desde el repositorio
+  /// y actualiza el estado local
   Future<void> fetchAmenities() async {
     // Actualizar estado a "cargando"
     _isLoading = true;
@@ -67,12 +60,10 @@ class AmenityProvider extends ChangeNotifier {
     }
   }
   
-  /**
-   * Obtiene una zona común específica por su ID
-   * 
-   * @param id Identificador único de la zona común
-   * @return La zona común encontrada o null en caso de error
-   */
+  /// Obtiene una zona común específica por su ID
+  /// 
+  /// @param id Identificador único de la zona común
+  /// @return La zona común encontrada o null en caso de error
   Future<Amenity?> getAmenityById(int id) async {
     _isLoading = true;
     _errorMessage = null;
@@ -91,14 +82,12 @@ class AmenityProvider extends ChangeNotifier {
     }
   }
   
-  /**
-   * Crea una nueva zona común
-   * 
-   * @param name Nombre de la zona común (requerido)
-   * @param description Descripción de la zona común (opcional)
-   * @param capacity Capacidad máxima de personas (opcional)
-   * @return La nueva zona común creada o null en caso de error
-   */
+  /// Crea una nueva zona común
+  /// 
+  /// @param name Nombre de la zona común (requerido)
+  /// @param description Descripción de la zona común (opcional)
+  /// @param capacity Capacidad máxima de personas (opcional)
+  /// @return La nueva zona común creada o null en caso de error
   Future<Amenity?> createAmenity({
     required String name,
     String? description,
@@ -130,16 +119,14 @@ class AmenityProvider extends ChangeNotifier {
     }
   }
   
-  /**
-   * Actualiza una zona común existente
-   * 
-   * @param id Identificador único de la zona común a actualizar
-   * @param name Nuevo nombre (opcional)
-   * @param description Nueva descripción (opcional)
-   * @param capacity Nueva capacidad máxima (opcional)
-   * @param status Nuevo estado (opcional)
-   * @return true si la actualización fue exitosa, false en caso contrario
-   */
+  /// Actualiza una zona común existente
+  /// 
+  /// @param id Identificador único de la zona común a actualizar
+  /// @param name Nuevo nombre (opcional)
+  /// @param description Nueva descripción (opcional)
+  /// @param capacity Nueva capacidad máxima (opcional)
+  /// @param status Nuevo estado (opcional)
+  /// @return true si la actualización fue exitosa, false en caso contrario
   Future<bool> updateAmenity(int id, {
     String? name,
     String? description,
@@ -177,12 +164,10 @@ class AmenityProvider extends ChangeNotifier {
     }
   }
   
-  /**
-   * Elimina una zona común
-   * 
-   * @param id Identificador único de la zona común a eliminar
-   * @return true si la eliminación fue exitosa, false en caso contrario
-   */
+  /// Elimina una zona común
+  /// 
+  /// @param id Identificador único de la zona común a eliminar
+  /// @return true si la eliminación fue exitosa, false en caso contrario
   Future<bool> deleteAmenity(int id) async {
     _isLoading = true;
     _errorMessage = null;

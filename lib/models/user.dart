@@ -1,9 +1,8 @@
-/**
- * Modelo de Usuario
- * 
- * Esta clase representa un usuario en la aplicación.
- * Contiene sus datos básicos y métodos para convertir entre objeto y JSON.
- */
+/// Modelo de Usuario
+/// 
+/// Esta clase representa un usuario en la aplicación.
+/// Contiene sus datos básicos y métodos para convertir entre objeto y JSON.
+library;
 
 class User {
   // Datos principales del usuario

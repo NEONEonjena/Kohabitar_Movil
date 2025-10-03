@@ -7,7 +7,7 @@ import '../../pages/providers/property_provider.dart';
 import './registered_vehicles_screen.dart';
 
 class AssignVehicleScreen extends StatefulWidget {
-  const AssignVehicleScreen({Key? key}) : super(key: key);
+  const AssignVehicleScreen({super.key});
 
   @override
   State<AssignVehicleScreen> createState() => _AssignVehicleScreenState();
@@ -247,7 +247,10 @@ class _AssignVehicleScreenState extends State<AssignVehicleScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const RegisteredVehiclesScreen(),
+            builder: (context) => ChangeNotifierProvider(
+              create: (_) => VehicleProvider(),
+              child: const RegisteredVehiclesScreen(),
+            ),
           ),
         );
       }
@@ -415,7 +418,10 @@ class _AssignVehicleScreenState extends State<AssignVehicleScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RegisteredVehiclesScreen(),
+                            builder: (context) => ChangeNotifierProvider(
+                              create: (_) => VehicleProvider(),
+                              child: const RegisteredVehiclesScreen(),
+                            ),
                           ),
                         );
                       },

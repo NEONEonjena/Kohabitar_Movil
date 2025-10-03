@@ -1,4 +1,3 @@
-import '../models/api_response.dart';
 import '../models/user.dart';
 import '../services/user_service.dart';
 

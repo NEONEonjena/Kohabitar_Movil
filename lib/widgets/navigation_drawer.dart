@@ -1,20 +1,19 @@
-/**
- * CustomDrawer
- * 
- * Este widget implementa el panel lateral de navegación de la aplicación.
- * Muestra la información del usuario actual y proporciona acceso a todas
- * las secciones principales de la aplicación.
- * 
- * El menú lateral incluye opciones para:
- * - Usuarios
- * - Propiedades
- * - Parqueaderos
- * - Visitantes
- * - Zonas comunes
- * - Y otras funcionalidades del sistema
- * 
- * También incluye una opción para cerrar la sesión del usuario.
- */
+/// CustomDrawer
+/// 
+/// Este widget implementa el panel lateral de navegación de la aplicación.
+/// Muestra la información del usuario actual y proporciona acceso a todas
+/// las secciones principales de la aplicación.
+/// 
+/// El menú lateral incluye opciones para:
+/// - Usuarios
+/// - Propiedades
+/// - Parqueaderos
+/// - Visitantes
+/// - Zonas comunes
+/// - Y otras funcionalidades del sistema
+/// 
+/// También incluye una opción para cerrar la sesión del usuario.
+library;
 import 'package:flutter/material.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -44,9 +43,7 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  /**
-   * Construye el encabezado del drawer que muestra la información del usuario
-   */
+  /// Construye el encabezado del drawer que muestra la información del usuario
   Widget _buildHeader(BuildContext context) {
     return DrawerHeader(
       decoration: BoxDecoration(
@@ -92,9 +89,7 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  /**
-   * Construye la lista de opciones de menú del panel lateral
-   */
+  /// Construye la lista de opciones de menú del panel lateral
   Widget _buildMenuItems(BuildContext context) {
     return Column(
       children: [
@@ -181,14 +176,12 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  /**
-   * Construye un elemento del menú con estilo personalizado
-   * 
-   * @param icon Icono para el elemento del menú
-   * @param title Texto del elemento
-   * @param index Índice asociado a la opción
-   * @param isSelected Indica si este elemento está seleccionado actualmente
-   */
+  /// Construye un elemento del menú con estilo personalizado
+  /// 
+  /// @param icon Icono para el elemento del menú
+  /// @param title Texto del elemento
+  /// @param index Índice asociado a la opción
+  /// @param isSelected Indica si este elemento está seleccionado actualmente
   Widget _buildListTile(
     BuildContext context,
     IconData icon,
@@ -242,9 +235,7 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  /**
-   * Construye el elemento para cerrar sesión con estilo diferenciado
-   */
+  /// Construye el elemento para cerrar sesión con estilo diferenciado
   Widget _buildLogoutTile(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.logout, color: Colors.red),

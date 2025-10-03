@@ -3,7 +3,7 @@ import '../../models/parking_slot.dart';
 import '../../services/parking_service.dart';
 
 class ParkingSlotsScreen extends StatefulWidget {
-  const ParkingSlotsScreen({Key? key}) : super(key: key);
+  const ParkingSlotsScreen({super.key});
 
   @override
   State<ParkingSlotsScreen> createState() => _ParkingSlotsScreenState();
@@ -494,12 +494,12 @@ class _ParkingSlotsScreenState extends State<ParkingSlotsScreen> {
                 Navigator.of(context).pop();
                 await _assignVehicleToSlot(slot, selectedVehicle!);
               },
-              child: const Text('Asignar'),
               style: TextButton.styleFrom(
                 foregroundColor: selectedVehicle == null 
                   ? Colors.grey 
                   : const Color(0xFF05877C),
               ),
+              child: const Text('Asignar'),
             ),
           ],
         );

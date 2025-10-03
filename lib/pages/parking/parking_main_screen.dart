@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../pages/providers/vehicle_provider.dart';
 import './assign_vehicle_screen.dart';
 import './registered_vehicles_screen.dart';
 import './parking_slots_screen.dart';
 
 class ParkingMainScreen extends StatelessWidget {
-  const ParkingMainScreen({Key? key}) : super(key: key);
+  const ParkingMainScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +29,10 @@ class ParkingMainScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Icono principal
-              Icon(
+              const Icon(
                 Icons.local_parking_rounded,
                 size: 80,
-                color: const Color(0xFF05877C),
+                color: Color(0xFF05877C),
               ),
               
               const SizedBox(height: 40),
@@ -44,7 +46,10 @@ class ParkingMainScreen extends StatelessWidget {
                 () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AssignVehicleScreen(),
+                    builder: (context) => ChangeNotifierProvider(
+                      create: (_) => VehicleProvider(),
+                      child: const AssignVehicleScreen(),
+                    ),
                   ),
                 ),
               ),
@@ -60,7 +65,10 @@ class ParkingMainScreen extends StatelessWidget {
                 () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const RegisteredVehiclesScreen(),
+                    builder: (context) => ChangeNotifierProvider(
+                      create: (_) => VehicleProvider(),
+                      child: const RegisteredVehiclesScreen(),
+                    ),
                   ),
                 ),
               ),

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/**
- * Proveedor de Configuración Regional
- * 
- * Esta clase gestiona el idioma de la aplicación y persiste la selección
- * del usuario utilizando SharedPreferences.
- */
+/// Proveedor de Configuración Regional
+/// 
+/// Esta clase gestiona el idioma de la aplicación y persiste la selección
+/// del usuario utilizando SharedPreferences.
 class LocaleProvider extends ChangeNotifier {
   Locale? _locale;
   SharedPreferences? _prefs;

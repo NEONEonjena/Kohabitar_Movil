@@ -1,17 +1,16 @@
-/**
- * 
- * Este es el punto de entrada principal de la aplicación. Aquí se configuran
- * los proveedores de estado, el tema y las rutas de la aplicación.
- * 
- * La arquitectura se organiza en capas:
- * 
- * 1. Capa de UI (pages/): Pantallas y widgets con los que el usuario ve e interactúa
- * 2. Capa de Estado (providers/): Gestión del estado de la aplicación usando Provider
- * 3. Capa de Servicios (services/): Lógica de negocio y comunicación con el servidor
- * 4. Capa de Datos (models/): Estructuras de datos y conversión JSON
- * 
- * Esta versión está diseñada para ser fácil de entender y modificar.
- */
+/// 
+/// Este es el punto de entrada principal de la aplicación. Aquí se configuran
+/// los proveedores de estado, el tema y las rutas de la aplicación.
+/// 
+/// La arquitectura se organiza en capas:
+/// 
+/// 1. Capa de UI (pages/): Pantallas y widgets con los que el usuario ve e interactúa
+/// 2. Capa de Estado (providers/): Gestión del estado de la aplicación usando Provider
+/// 3. Capa de Servicios (services/): Lógica de negocio y comunicación con el servidor
+/// 4. Capa de Datos (models/): Estructuras de datos y conversión JSON
+/// 
+/// Esta versión está diseñada para ser fácil de entender y modificar.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'pages/providers/auth_provider.dart';
 import 'pages/providers/theme_provider.dart';
 import 'pages/providers/property_provider.dart';
+import 'pages/providers/vehicle_provider.dart';
 import 'pages/parqueaderos/providers/parking_slot_provider.dart';
 
 // Se importan las páginas principales
@@ -50,6 +50,9 @@ class MyApp extends StatelessWidget {
         
         // Provider para propiedades
         ChangeNotifierProvider(create: (_) => PropertyProvider()),
+        
+        // Provider para vehículos
+        ChangeNotifierProvider(create: (_) => VehicleProvider()),
         
         // Provider para los espacios de parqueo
         ChangeNotifierProvider(create: (_) => ParkingSlotProvider()),

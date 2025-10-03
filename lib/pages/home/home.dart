@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
 
     _pages = [
       HomeContent(username: auth.username ?? 'Invitado'),
-      UserProfilePage(),
+      const UserProfilePage(),
       const settings.SettingsPage(),
     ];
 

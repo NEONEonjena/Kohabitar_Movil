@@ -7,7 +7,7 @@ import 'property_detail_screen.dart';
 import '../../widgets/navigation_drawer.dart';
 
 class PropertyListScreen extends StatefulWidget {
-  const PropertyListScreen({Key? key}) : super(key: key);
+  const PropertyListScreen({super.key});
 
   @override
   _PropertyListScreenState createState() => _PropertyListScreenState();

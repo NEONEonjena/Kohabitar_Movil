@@ -1,13 +1,12 @@
-/**
- * AuthWrapper
- * 
- * Este widget es responsable de decidir qué pantalla mostrar:
- * - Si el usuario está autenticado, muestra la página principal
- * - Si no está autenticado, muestra la pantalla de login
- * 
- * Funciona como un "guardián" que verifica el estado de autenticación
- * cada vez que la aplicación se inicia.
- */
+/// AuthWrapper
+/// 
+/// Este widget es responsable de decidir qué pantalla mostrar:
+/// - Si el usuario está autenticado, muestra la página principal
+/// - Si no está autenticado, muestra la pantalla de login
+/// 
+/// Funciona como un "guardián" que verifica el estado de autenticación
+/// cada vez que la aplicación se inicia.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

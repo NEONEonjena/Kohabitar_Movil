@@ -1,9 +1,8 @@
-/**
- * Página de Perfil de Usuario
- * 
- * Esta pantalla muestra los datos del perfil del usuario
- * y permite realizar acciones básicas como cerrar sesión.
- */
+/// Página de Perfil de Usuario
+/// 
+/// Esta pantalla muestra los datos del perfil del usuario
+/// y permite realizar acciones básicas como cerrar sesión.
+library;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

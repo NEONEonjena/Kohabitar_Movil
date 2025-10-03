@@ -6,9 +6,9 @@ class SuccessfulRegistrationScreen extends StatelessWidget {
   final Vehicle vehicle;
   
   const SuccessfulRegistrationScreen({
-    Key? key,
+    super.key,
     required this.vehicle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

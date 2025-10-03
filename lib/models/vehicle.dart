@@ -17,7 +17,7 @@ class Vehicle {
     this.propertyName,
     this.owner,
     String? brandModel,
-  }) : this.brandModel = brandModel ?? '$brand $model';
+  }) : brandModel = brandModel ?? '$brand $model';
 
   factory Vehicle.fromJson(Map<String, dynamic> json) {
     final brand = json['model'] ?? ''; // En la API, la información de marca está en el campo model

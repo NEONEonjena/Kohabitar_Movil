@@ -1,12 +1,11 @@
-/**
- * Servicio de Espacios de Parqueo (ParkingSlot Service)
- * 
- * Esta clase proporciona métodos para interactuar con los endpoints de la API
- * relacionados con los espacios de parqueo individuales dentro de las zonas.
- * 
- * El servicio utiliza el cliente API centralizado para realizar las peticiones
- * HTTP y procesar las respuestas.
- */
+/// Servicio de Espacios de Parqueo (ParkingSlot Service)
+/// 
+/// Esta clase proporciona métodos para interactuar con los endpoints de la API
+/// relacionados con los espacios de parqueo individuales dentro de las zonas.
+/// 
+/// El servicio utiliza el cliente API centralizado para realizar las peticiones
+/// HTTP y procesar las respuestas.
+library;
 import '../core/network/api_client.dart';
 import '../core/network/api_constants.dart';
 import '../models/parking_slot.dart';

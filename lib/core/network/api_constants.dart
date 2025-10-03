@@ -1,16 +1,14 @@
-/**
- * Clase ApiConstants
- * 
- * Esta clase define todas las constantes relacionadas con la API REST.
- * Aquí se centraliza la configuración de:
- * - URL base de la API
- * - Versión de la API
- * - Endpoints para cada recurso
- * - Tiempos de espera para conexiones HTTP
- * 
- * Al tener estas constantes centralizadas, es fácil cambiar la configuración
- * de la API en un solo lugar, por ejemplo, al migrar de desarrollo local a producción.
- */
+/// Clase ApiConstants
+/// 
+/// Esta clase define todas las constantes relacionadas con la API REST.
+/// Aquí se centraliza la configuración de:
+/// - URL base de la API
+/// - Versión de la API
+/// - Endpoints para cada recurso
+/// - Tiempos de espera para conexiones HTTP
+/// 
+/// Al tener estas constantes centralizadas, es fácil cambiar la configuración
+/// de la API en un solo lugar, por ejemplo, al migrar de desarrollo local a producción.
 class ApiConstants {
   // URL base de la API (localhost para entornos de desarrollo local)
   static const String baseUrl = 'http://localhost:3000';

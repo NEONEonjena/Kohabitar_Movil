@@ -9,7 +9,6 @@ import '../pages/zonas_comunes/zonas_comunes_page.dart';
 import '../pages/propiedades/property_list_screen.dart';
 import '../pages/propiedades/property_detail_screen.dart';
 import '../pages/users/users_page.dart';
-import '../pages/parqueaderos/parqueaderos_page.dart';
 import '../pages/parqueaderos/providers/parking_slot_provider.dart';
 import '../pages/parqueaderos/widgets/parking_slot_list_screen.dart';
 import '../pages/parqueaderos/widgets/api_tester.dart';
@@ -42,7 +41,7 @@ class AppRoutes {
         splash: (context) => const SplashApp(),
         login: (context) => const LoginPage(),
         home: (context) => const HomePage(),
-        zonaComunes: (context) => ZonasComunesPage(),
+        zonaComunes: (context) => const ZonasComunesPage(),
         settings: (context) => const SettingsPage(),
         propiedades: (context) => const PropertyListScreen(),
         propertyList: (context) => const PropertyListScreen(),
@@ -62,7 +61,7 @@ class AppRoutes {
           return PropertyDetailScreen(property: property);
         },
         usuarios: (context) => const UsuariosPage(),
-        parqueaderos: (context) => const ParqueaderosPage(),
+        parqueaderos: (context) => const ParkingMainScreen(),
         parkingSlots: (context) {
           // Se obtiene el zoneId del argumento si está disponible
           final args = ModalRoute.of(context)?.settings.arguments

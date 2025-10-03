@@ -1,16 +1,15 @@
-/**
- * API Client
- * 
- * El cliente API facilita la comunicación con el servidor.
- * Proporciona métodos básicos para realizar peticiones HTTP y
- * gestiona las respuestas de forma estandarizada.
- * 
- * Características:
- * - Implementa métodos HTTP básicos (GET, POST, PUT, DELETE)
- * - Gestiona autenticación con tokens JWT
- * - Maneja errores de forma básica
- * - Incluye comentarios explicativos para cada parte
- */
+/// API Client
+/// 
+/// El cliente API facilita la comunicación con el servidor.
+/// Proporciona métodos básicos para realizar peticiones HTTP y
+/// gestiona las respuestas de forma estandarizada.
+/// 
+/// Características:
+/// - Implementa métodos HTTP básicos (GET, POST, PUT, DELETE)
+/// - Gestiona autenticación con tokens JWT
+/// - Maneja errores de forma básica
+/// - Incluye comentarios explicativos para cada parte
+library;
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -62,20 +61,14 @@ class ApiClient {
   // Cliente HTTP que realiza las peticiones
   final http.Client _httpClient;
 
-  /**
-   * Constructor factory que devuelve la instancia singleton
-   */
+  /// Constructor factory que devuelve la instancia singleton
   factory ApiClient() => _instance;
 
-  /**
-   * Constructor privado que inicializa el cliente HTTP
-   */
+  /// Constructor privado que inicializa el cliente HTTP
   ApiClient._internal() : _httpClient = http.Client();
 
-  /**
-   * Constructor especial para pruebas unitarias
-   * Permite inyectar un cliente HTTP simulado para pruebas
-   */
+  /// Constructor especial para pruebas unitarias
+  /// Permite inyectar un cliente HTTP simulado para pruebas
   ApiClient.test(this._httpClient);
 
   // Obtiene el token de autenticación almacenado en el dispositivo local

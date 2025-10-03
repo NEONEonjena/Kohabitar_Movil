@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ChangeEmailDialog extends StatefulWidget {
-  const ChangeEmailDialog({Key? key}) : super(key: key);
+  const ChangeEmailDialog({super.key});
 
   @override
   State<ChangeEmailDialog> createState() => _ChangeEmailDialogState();

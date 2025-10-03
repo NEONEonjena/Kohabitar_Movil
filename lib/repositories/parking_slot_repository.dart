@@ -1,10 +1,9 @@
-/**
- * Repositorio de Espacios de Parqueo (ParkingSlot Repository)
- * 
- * Esta clase sirve como intermediaria entre las capas de UI y servicios.
- * Proporciona métodos para acceder a los datos de espacios de parqueo
- * y maneja la lógica de negocio relacionada con estos datos.
- */
+/// Repositorio de Espacios de Parqueo (ParkingSlot Repository)
+/// 
+/// Esta clase sirve como intermediaria entre las capas de UI y servicios.
+/// Proporciona métodos para acceder a los datos de espacios de parqueo
+/// y maneja la lógica de negocio relacionada con estos datos.
+library;
 import '../models/parking_slot.dart';
 import '../services/parking_slot_service.dart';
 

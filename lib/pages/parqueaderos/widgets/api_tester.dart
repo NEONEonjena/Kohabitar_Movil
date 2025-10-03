@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiTesterScreen extends StatefulWidget {
-  const ApiTesterScreen({Key? key}) : super(key: key);
+  const ApiTesterScreen({super.key});
 
   @override
   _ApiTesterScreenState createState() => _ApiTesterScreenState();
@@ -91,8 +91,7 @@ class _ApiTesterScreenState extends State<ApiTesterScreen> {
         _isLoading = false;
         _success = response.success;
         if (response.success && response.data != null) {
-          _resultController.text = 'Éxito! Se recibieron ${response.data!.length} elementos\n\n' +
-              response.data!.map((slot) => '- ${slot.code}: ${slot.statusName ?? "Sin estado"}').join('\n');
+          _resultController.text = 'Éxito! Se recibieron ${response.data!.length} elementos\n\n${response.data!.map((slot) => '- ${slot.code}: ${slot.statusName ?? "Sin estado"}').join('\n')}';
         } else {
           _resultController.text = 'Error: ${response.message}';
         }
@@ -123,8 +122,7 @@ class _ApiTesterScreenState extends State<ApiTesterScreen> {
         _isLoading = false;
         if (provider.errorMessage.isEmpty) {
           _success = true;
-          _resultController.text = 'Éxito! Se cargaron ${provider.allSlots.length} espacios de parqueo\n\n' +
-              provider.allSlots.map((slot) => '- ${slot.code}: ${slot.statusName ?? "Sin estado"}').join('\n');
+          _resultController.text = 'Éxito! Se cargaron ${provider.allSlots.length} espacios de parqueo\n\n${provider.allSlots.map((slot) => '- ${slot.code}: ${slot.statusName ?? "Sin estado"}').join('\n')}';
         } else {
           _success = false;
           _error = provider.errorMessage;

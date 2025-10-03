@@ -3,10 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import '../../widgets/navigation_drawer.dart';
-import '../providers/property_provider.dart';
 import '../providers/auth_provider.dart'; // Added import for AuthProvider
-import '../../models/property.dart';
-import 'property_list_screen.dart';
 
 class PropiedadesPage extends StatefulWidget {
   const PropiedadesPage({super.key});

@@ -4,7 +4,7 @@ import '../../models/property.dart';
 class PropertyDetailScreen extends StatelessWidget {
   final Property property;
 
-  const PropertyDetailScreen({Key? key, required this.property}) : super(key: key);
+  const PropertyDetailScreen({super.key, required this.property});
 
   @override
   Widget build(BuildContext context) {
