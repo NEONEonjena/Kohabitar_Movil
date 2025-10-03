@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/navigation_drawer.dart';
 
 class NotificacionesPage extends StatefulWidget {
   const NotificacionesPage({super.key});
@@ -79,6 +80,23 @@ class _NotificacionesPageState extends State<NotificacionesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notificaciones'),
+      ),
+      drawer: CustomDrawer(
+        username: "William", // TODO: pásalo dinámico desde login
+        currentIndex: 0,
+        onItemSelected: (index) {
+          Navigator.pop(context);
+          if (index == 0) {
+            Navigator.pushReplacementNamed(context, '/zonas');
+          } else if (index == 1) {
+            Navigator.pushReplacementNamed(context, '/clientes');
+          } else if (index == 2) {
+            Navigator.pushReplacementNamed(context, '/configuraciones');
+          }
+        },
+        onLogout: () {
+          Navigator.pushReplacementNamed(context, '/login');
+        },
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

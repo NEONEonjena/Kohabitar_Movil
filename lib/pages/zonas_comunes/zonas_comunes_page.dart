@@ -12,7 +12,9 @@ class ZonasComunesPage extends StatefulWidget {
 
 class _ZonasComunesPageState extends State<ZonasComunesPage> {
   List<dynamic> amenities = [];
+  List<dynamic> filteredAmenities = [];
   bool isLoading = true;
+  int selectedStatusId = 1; // 1 = activas por defecto
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
         if (data['success']) {
           setState(() {
             amenities = data['data'];
+            _applyFilter();
             isLoading = false;
           });
         }
@@ -51,6 +54,21 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
     }
   }
 
+  void _applyFilter() {
+    setState(() {
+      filteredAmenities = amenities
+          .where((amenity) => amenity['status_id'] == selectedStatusId)
+          .toList();
+    });
+  }
+
+  void _changeFilter(int statusId) {
+    setState(() {
+      selectedStatusId = statusId;
+      _applyFilter();
+    });
+  }
+
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -64,8 +82,8 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
   void _reservar(String amenityName, int amenityId) {
     final _formKey = GlobalKey<FormState>();
     final TextEditingController capacityController = TextEditingController();
-    final TextEditingController startTimeController = TextEditingController();
-    final TextEditingController endTimeController = TextEditingController();
+    final TextEditingController startDateController = TextEditingController();
+    final TextEditingController endDateController = TextEditingController();
 
     showDialog(
       context: context,
@@ -85,17 +103,21 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
                     validator: (value) =>
                         value == null || value.isEmpty ? 'Requerido' : null,
                   ),
+                  const SizedBox(height: 8),
                   TextFormField(
-                    controller: startTimeController,
-                    decoration:
-                        const InputDecoration(labelText: 'Hora inicio (HH:mm)'),
+                    controller: startDateController,
+                    decoration: const InputDecoration(
+                        labelText: 'Fecha/Hora inicio (YYYY-MM-DD HH:mm:ss)',
+                        hintText: '2025-09-28 14:00:00'),
                     validator: (value) =>
                         value == null || value.isEmpty ? 'Requerido' : null,
                   ),
+                  const SizedBox(height: 8),
                   TextFormField(
-                    controller: endTimeController,
-                    decoration:
-                        const InputDecoration(labelText: 'Hora fin (HH:mm)'),
+                    controller: endDateController,
+                    decoration: const InputDecoration(
+                        labelText: 'Fecha/Hora fin (YYYY-MM-DD HH:mm:ss)',
+                        hintText: '2025-09-28 16:00:00'),
                     validator: (value) =>
                         value == null || value.isEmpty ? 'Requerido' : null,
                   ),
@@ -116,8 +138,8 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
                   _processReservation(
                     amenityId,
                     int.tryParse(capacityController.text) ?? 1,
-                    startTimeController.text,
-                    endTimeController.text,
+                    startDateController.text,
+                    endDateController.text,
                   );
                 }
               },
@@ -129,21 +151,26 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
   }
 
   /// POST a backend
-  Future<void> _processReservation(
-      int amenityId, int capacity, String startTime, String endTime) async {
+  Future<void> _processReservation(int amenityId, int capacity,
+      String startDateTime, String endDateTime) async {
     try {
+      // Formatear la fecha actual en el formato esperado
+      final now = DateTime.now();
+      final createAt =
+          "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}";
+
       final response = await http.post(
         Uri.parse('http://localhost:3000/api_v1/reservation'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           "amenity_id": amenityId,
           "user_id": 1, // TODO: reemplazar con id real del usuario logueado
-          "status_id": 1, // ejemplo: 1 = activa
-          "tariff_id": 2, // ejemplo: id tarifa
-          "reservation_createAt": DateTime.now().toIso8601String(),
-          "reservation_start_time": startTime,
-          "reservation_end_time": endTime,
-          "reservation_time_unit": "hora", // o 1 si tu BD espera entero
+          "status_id": 1,
+          "tariff_id": 1,
+          "reservation_createAt": createAt,
+          "reservation_start_time": startDateTime,
+          "reservation_end_time": endDateTime,
+          "reservation_time_unit": 1,
           "reservation_capacity": capacity,
         }),
       );
@@ -160,7 +187,7 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
         _showError("Error: ${data['error'] ?? 'No se pudo crear la reserva'}");
       }
     } catch (e) {
-      _showError('Error de conexión al procesar la reserva');
+      _showError('Error de conexión al procesar la reserva: $e');
     }
   }
 
@@ -169,7 +196,6 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Zonas Comunes"),
-        backgroundColor: const Color(0xFF2E7D7B),
       ),
       drawer: CustomDrawer(
         username: "William", // TODO: pásalo dinámico desde login
@@ -188,7 +214,6 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(
         child: Column(
           children: [
@@ -198,8 +223,8 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildFilterButton('activas', true),
-                  _buildFilterButton('inactivas', false),
+                  _buildFilterButton('Activas', 1),
+                  _buildFilterButton('Inactivas', 2),
                 ],
               ),
             ),
@@ -207,26 +232,18 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
             // Lista de amenidades
             Expanded(
               child: isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0xFF2E7D7B),
-                      ),
-                    )
-                  : amenities.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : filteredAmenities.isEmpty
                       ? Center(
                           child: Text(
-                            'No hay zonas comunes disponibles',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
-                            ),
+                            'No hay zonas comunes ${selectedStatusId == 1 ? "activas" : "inactivas"}',
                           ),
                         )
                       : ListView.builder(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: amenities.length,
+                          itemCount: filteredAmenities.length,
                           itemBuilder: (context, index) {
-                            final amenity = amenities[index];
+                            final amenity = filteredAmenities[index];
                             return _buildAmenityCard(amenity);
                           },
                         ),
@@ -237,29 +254,28 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
     );
   }
 
-  Widget _buildFilterButton(String text, bool isActive) {
+  Widget _buildFilterButton(String text, int statusId) {
+    bool isSelected = selectedStatusId == statusId;
+
     return Expanded(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 4),
         child: ElevatedButton(
-          onPressed: () {
-            // TODO: lógica de filtros
-          },
+          onPressed: () => _changeFilter(statusId),
           style: ElevatedButton.styleFrom(
-            backgroundColor:
-                isActive ? const Color(0xFF1B4B49) : const Color(0xFF4A9B99),
+            backgroundColor: isSelected ? Colors.blue : Colors.grey,
             foregroundColor: Colors.white,
-            elevation: 0,
+            elevation: isSelected ? 4 : 2,
             padding: const EdgeInsets.symmetric(vertical: 12),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
-              fontWeight: FontWeight.w500,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             ),
           ),
         ),
@@ -268,6 +284,8 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
   }
 
   Widget _buildAmenityCard(dynamic amenity) {
+    final theme = Theme.of(context);
+
     String amenityName =
         amenity['name']?.toString().toUpperCase() ?? 'AMENIDAD';
     String description = amenity['description'] ?? 'Sin descripción';
@@ -278,19 +296,7 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
         status.toLowerCase() == 'available' ||
         status.toLowerCase() == 'disponible';
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -298,28 +304,20 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
           children: [
             Text(
               amenityName,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF2E7D7B),
-              ),
+              style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 4),
             Text(
               description,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-              ),
+              style: theme.textTheme.bodyLarge,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Estado: $status',
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: theme.textTheme.titleMedium?.copyWith(
                     color: isAvailable ? Colors.green : Colors.red,
                     fontWeight: FontWeight.w500,
                   ),
@@ -328,25 +326,7 @@ class _ZonasComunesPageState extends State<ZonasComunesPage> {
                   onPressed: isAvailable
                       ? () => _reservar(amenityName, amenityId)
                       : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isAvailable
-                        ? const Color(0xFF1B4B49)
-                        : Colors.grey[400],
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: const Text(
-                    'Reservar',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  child: const Text('Reservar'),
                 ),
               ],
             ),
