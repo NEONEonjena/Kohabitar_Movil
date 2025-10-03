@@ -33,7 +33,6 @@ class AppRoutes {
   static const String paquetes = '/paquetes';
   static const String pagos = '/pagos';
   static const String pqrs = '/pqrs';
-  
 
   // Mapa de rutas
   static Map<String, WidgetBuilder> get routes => {
